@@ -1,6 +1,6 @@
 // Service worker — cache-first pour un fonctionnement 100% hors-ligne.
 // Incrémentez CACHE à chaque mise à jour de contenu pour forcer le rafraîchissement.
-var CACHE = "arret-cardiaque-v1-0";
+var CACHE = "arret-cardiaque-v1-1";
 var ASSETS = [
   "./",
   "./index.html",
