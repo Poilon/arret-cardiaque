@@ -33,8 +33,9 @@ self.addEventListener("fetch", function(e){
 
   if(isHTML){
     // Network-first : en ligne on a TOUJOURS la dernière version ; hors-ligne → cache.
+    // cache:"no-store" => on court-circuite le cache HTTP du navigateur (max-age Cloudflare).
     e.respondWith(
-      fetch(req).then(function(res){
+      fetch(req, {cache:"no-store"}).then(function(res){
         var copy = res.clone();
         caches.open(CACHE).then(function(c){ c.put("./index.html", copy); });
         return res;

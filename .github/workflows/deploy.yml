@@ -26,3 +26,21 @@ jobs:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
+      # Purge le cache edge Cloudflare après mise en ligne (sinon sw.js/HTML restent en cache ~4 h).
+      # S'active uniquement si la variable de dépôt CF_ZONE_ID est définie (Settings → Variables)
+      # et le secret CF_API_TOKEN (Settings → Secrets). Sinon l'étape est ignorée.
+      - name: Purger le cache Cloudflare
+        if: ${{ vars.CF_ZONE_ID != '' }}
+        env:
+          CF_ZONE_ID: ${{ vars.CF_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          curl -sf -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"files":[
+              "https://poilon.com/arret-cardiaque/",
+              "https://poilon.com/arret-cardiaque/index.html",
+              "https://poilon.com/arret-cardiaque/sw.js",
+              "https://poilon.com/arret-cardiaque/manifest.webmanifest"
+            ]}'
