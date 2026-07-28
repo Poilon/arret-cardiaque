@@ -257,7 +257,18 @@
 
 <script>
 if("serviceWorker" in navigator){
-  window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  window.addEventListener("load",function(){
+    // updateViaCache:"none" => le fichier sw.js n'est jamais servi depuis le cache HTTP,
+    // le navigateur détecte donc immédiatement une nouvelle version à chaque déploiement.
+    navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(reg){
+      reg.update();
+    }).catch(function(){});
+    // Quand le nouveau SW prend le contrôle, on recharge une fois pour afficher la version fraîche.
+    var reloaded=false;
+    navigator.serviceWorker.addEventListener("controllerchange",function(){
+      if(reloaded) return; reloaded=true; window.location.reload();
+    });
+  });
 }
 </script>
 </body>
