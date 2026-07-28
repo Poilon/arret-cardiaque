@@ -4,335 +4,222 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b1020">
-<meta name="description" content="Aide décisionnelle hors-ligne : conduite à tenir devant un arrêt cardiaque adulte (ALS), d'après ERC Guidelines 2025. Pour médecins et internes.">
+<meta name="description" content="Algorithme complet de l'arrêt cardiaque adulte (ALS) en un organigramme, d'après ERC Guidelines 2025. Hors-ligne, pour médecins et internes.">
 <title>Arrêt cardiaque — ALS adulte (ERC 2025)</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <style>
   :root{
-    --bg:#0b1020; --panel:#141b31; --panel2:#1b2340; --ink:#eef2ff; --muted:#9fb0d0;
+    --bg:#0b1020; --panel:#151c33; --panel2:#1b2340; --ink:#eef2ff; --muted:#93a5c8;
     --line:#2a3557; --shock:#f59e0b; --noshock:#38bdf8; --drug:#a78bfa; --amio:#f472b6;
-    --cause:#2dd4bf; --ok:#22c55e; --danger:#ef4444; --gold:#fbbf24;
+    --cause:#2dd4bf; --ok:#22c55e; --danger:#ef4444; --gold:#fbbf24; --dec:#fb7185;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;height:100%}
+  html,body{margin:0}
   body{
-    background:var(--bg); color:var(--ink);
+    background:var(--bg); color:var(--ink); -webkit-text-size-adjust:100%;
     font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-text-size-adjust:100%; overflow:hidden;
   }
-  .app{height:100dvh;height:100vh;display:flex;flex-direction:column;
+  .page{
     max-width:560px;margin:0 auto;
-    padding:env(safe-area-inset-top) 10px env(safe-area-inset-bottom)}
+    display:flex;flex-direction:column;gap:4px;
+    padding:calc(6px + env(safe-area-inset-top)) 8px calc(10px + env(safe-area-inset-bottom));
+  }
 
-  /* ---- Header ---- */
-  header{display:flex;align-items:center;gap:9px;padding:8px 2px 6px;flex:0 0 auto}
-  .logo{width:34px;height:34px;flex:0 0 auto;border-radius:9px;
-    background:linear-gradient(135deg,#ef4444,#b91c1c);display:grid;place-items:center;
-    box-shadow:0 4px 14px rgba(239,68,68,.4)}
-  .logo svg{width:20px;height:20px}
-  header .ht{flex:1;min-width:0}
-  header .t1{font-weight:800;font-size:.95rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  header .t2{font-size:.68rem;color:var(--muted)}
-  .tab-btn{flex:0 0 auto;border:1px solid var(--line);background:var(--panel2);color:var(--ink);
-    border-radius:10px;padding:8px 11px;font-size:.8rem;font-weight:700;cursor:pointer}
-  .tab-btn:active{transform:scale(.96)}
+  /* header */
+  header{display:flex;align-items:center;gap:8px;padding:1px 2px 3px}
+  .logo{width:26px;height:26px;flex:0 0 auto;border-radius:7px;
+    background:linear-gradient(135deg,#ef4444,#b91c1c);display:grid;place-items:center}
+  .logo svg{width:16px;height:16px}
+  header .t1{font-weight:800;font-size:.9rem;line-height:1.05}
+  header .t2{margin-left:auto;font-size:.6rem;color:var(--muted);text-align:right;line-height:1.2}
+  header .t2 b{color:var(--gold)}
 
-  /* ---- State chips ---- */
-  .chips{display:flex;gap:6px;flex:0 0 auto;padding:2px 0 6px}
-  .chip{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:10px;
-    padding:5px 4px;text-align:center;line-height:1.05}
-  .chip .n{font-size:1.15rem;font-weight:800;color:var(--gold)}
-  .chip .l{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-  .chip.on .n{color:var(--ink)}
+  /* nodes */
+  .n{position:relative;border-radius:11px;padding:6px 9px 6px 30px;border:1px solid var(--line);background:var(--panel)}
+  .n .t{font-weight:800;font-size:.76rem;line-height:1.15}
+  .n .s{font-size:.63rem;color:var(--muted);line-height:1.25;margin-top:1px}
+  .n .s b, .n .t b{color:var(--ink)}
+  .num{position:absolute;left:7px;top:7px;width:17px;height:17px;border-radius:50%;
+    background:var(--panel2);border:1px solid var(--line);color:var(--gold);
+    display:grid;place-items:center;font-size:.6rem;font-weight:800}
+  .n-start{border-left:4px solid var(--danger)}
+  .n-shock{border-left:4px solid var(--shock);background:linear-gradient(90deg,#33250b,var(--panel) 70%)}
+  .n-shock .t{color:#fcd34d}
+  .n-cpr{border-left:4px solid var(--ok)}
+  .n-adr{border-left:4px solid var(--drug);background:linear-gradient(90deg,#241b3d,var(--panel) 70%)}
+  .n-adr .t{color:#d8caff}
+  .n-amio{border-left:4px solid var(--amio)}
+  .n-rosc{border-left:4px solid var(--ok);background:linear-gradient(90deg,#0c2a18,var(--panel) 75%)}
+  .n-rosc .t{color:#86efac}
 
-  /* ---- Main ---- */
-  .main-wrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
-  main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+  /* decision */
+  .dec{position:relative;margin:0 auto;background:linear-gradient(135deg,#3d1a26,#2b1420);
+    border:1px solid #7c2d43;color:#fda4af;font-weight:800;text-align:center;
+    padding:5px 12px;font-size:.72rem;border-radius:4px;
+    clip-path:polygon(9px 0,calc(100% - 9px) 0,100% 50%,calc(100% - 9px) 100%,9px 100%,0 50%)}
+  .dec-main{width:72%;padding:7px 14px;font-size:.8rem}
+  /* arrows & labels */
+  .ar{display:grid;place-items:center;color:#5d6c94;font-size:.58rem;line-height:1;height:8px}
+  .yn{display:grid;grid-template-columns:1fr 1fr;font-size:.6rem;font-weight:800;padding:0 12%}
+  .yn .y{color:var(--gold)} .yn .nn{color:var(--noshock);text-align:right}
+  .ynr{display:flex;justify-content:space-between;font-size:.58rem;font-weight:700;padding:1px 4px}
+  .ynr .y{color:var(--gold)} .ynr .nn{color:var(--noshock)}
+  .goto{color:var(--muted);font-weight:600}
 
-  /* Ask view */
-  .ask-q{flex:0 0 auto;text-align:center;font-weight:800;font-size:1.02rem;padding:2px 0 2px}
-  .ask-q small{display:block;font-weight:600;color:var(--muted);font-size:.72rem}
-  .rbtns{flex:1 1 auto;display:flex;flex-direction:column;gap:8px;min-height:0}
-  .rbtn{flex:1 1 0;border:none;border-radius:16px;cursor:pointer;color:#08111f;
-    display:flex;align-items:center;gap:12px;padding:0 16px;text-align:left;
-    font-weight:800;transition:transform .06s}
-  .rbtn:active{transform:scale(.985)}
-  .rbtn .em{font-size:1.9rem;flex:0 0 auto;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
-  .rbtn .rt{font-size:1.18rem;line-height:1.1}
-  .rbtn .rs{font-size:.76rem;font-weight:600;opacity:.82}
-  .r-shock{background:linear-gradient(135deg,#fcd34d,#f59e0b)}
-  .r-noshock{background:linear-gradient(135deg,#7dd3fc,#38bdf8)}
-  .r-rosc{background:linear-gradient(135deg,#86efac,#22c55e)}
+  /* columns */
+  .cols{display:grid;grid-template-columns:1.06fr 1fr;gap:6px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:3px;border-radius:12px;padding:5px;border:1px solid}
+  .col-shock{background:linear-gradient(180deg,#241a07,#12101e 90%);border-color:#6b4a0e}
+  .col-ns{background:linear-gradient(180deg,#082738,#12101e 90%);border-color:#12506e}
+  .colhead{text-align:center;font-weight:800;font-size:.68rem;padding:2px;border-radius:7px;letter-spacing:.3px}
+  .col-shock .colhead{color:#1a1204;background:linear-gradient(135deg,#fcd34d,#f59e0b)}
+  .col-ns .colhead{color:#04222e;background:linear-gradient(135deg,#7dd3fc,#38bdf8)}
+  .colsub{text-align:center;font-size:.58rem;color:var(--muted);margin-top:-1px}
+  .col .n{padding:5px 7px 5px 27px;border-radius:9px}
+  .col .num{left:5px;top:6px;width:16px;height:16px;font-size:.56rem}
+  .col .t{font-size:.68rem}
+  .col .s{font-size:.58rem}
+  .col .dec{font-size:.6rem;padding:4px 11px;width:auto}
+  .loopnote{text-align:center;font-size:.58rem;color:var(--muted);padding:2px 0 1px}
+  .loopnote b{color:var(--ink)}
 
-  /* Result view */
-  .res-h{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:2px 2px}
-  .res-h .rh-t{font-weight:800;font-size:.82rem;letter-spacing:.4px;color:var(--muted);text-transform:uppercase}
-  .res-h .rh-ctx{margin-left:auto;font-weight:800;font-size:.8rem;padding:3px 9px;border-radius:999px}
-  .ctx-shock{background:var(--shock);color:#1a1204}
-  .ctx-noshock{background:var(--noshock);color:#04222e}
-  .ctx-rosc{background:var(--ok);color:#04140a}
-  .steps{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:7px;list-style:none;margin:0;padding:0}
-  .step{flex:1 1 0;min-height:0;display:flex;align-items:center;gap:11px;
-    background:var(--panel);border:1px solid var(--line);border-left-width:6px;border-radius:13px;padding:8px 12px}
-  .step .se{font-size:1.5rem;flex:0 0 auto}
-  .step .sb{min-width:0;display:flex;flex-direction:column;gap:2px}
-  .step .st{display:block;font-weight:800;font-size:1rem;line-height:1.12}
-  .step .ss{display:block;font-size:.74rem;color:var(--muted);line-height:1.15}
-  .k-shock{border-left-color:var(--shock)}
-  .k-cpr{border-left-color:var(--ok)}
-  .k-drug{border-left-color:var(--drug)}
-  .k-amio{border-left-color:var(--amio)}
-  .k-cause{border-left-color:var(--cause)}
-  .k-warn{border-left-color:var(--danger)}
-  .k-info{border-left-color:var(--noshock)}
-  .k-warn .st{color:#fca5a5}
+  /* bottom ref cards */
+  .col-ns .info{margin-top:3px}
+  .info{border-radius:10px;border:1px solid var(--line);background:var(--panel);padding:5px 8px;border-top:3px solid var(--line)}
+  .info .h{font-weight:800;font-size:.66rem;margin-bottom:2px}
+  .info ul{margin:0;padding:0;list-style:none;font-size:.62rem;line-height:1.4;color:var(--muted)}
+  .info li b{color:var(--ink)}
+  .i-q{border-top-color:var(--ok)} .i-q .h{color:#86efac}
+  .i-e{border-top-color:var(--shock)} .i-e .h{color:#fcd34d}
+  .i-d{border-top-color:var(--drug)} .i-d .h{color:#d8caff}
+  .i-c{border-top-color:var(--cause)} .i-c .h{color:var(--cause)}
+  .hh{color:var(--cause);font-weight:800}
 
-  /* Footer actions */
-  .acts{flex:0 0 auto;display:flex;gap:8px;padding:6px 0 4px}
-  .acts .primary{flex:1;border:none;border-radius:14px;cursor:pointer;
-    background:linear-gradient(135deg,#818cf8,#6366f1);color:#0a0a2a;font-weight:800;font-size:1.02rem;padding:15px}
-  .acts .primary:active{transform:scale(.985)}
-  .acts .ghost{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--muted);
-    border-radius:14px;font-weight:700;padding:0 15px;cursor:pointer;font-size:.85rem}
-  .disc{flex:0 0 auto;font-size:.62rem;color:var(--muted);text-align:center;padding:3px 4px 4px;line-height:1.25}
-  .disc b{color:#fca5a5}
-
-  /* ---- Reference screen ---- */
-  .ref{display:none;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2px 2px 12px}
-  body.show-ref .main-wrap{display:none}
-  body.show-ref .ref{display:block}
-  body.show-ref .chips{display:none}
-  .ref h3{font-size:.9rem;margin:12px 0 7px;display:flex;align-items:center;gap:7px}
-  .ref .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;border-left:4px solid var(--line)}
-  .rc-drug{border-left-color:var(--drug)!important}
-  .rc-energy{border-left-color:var(--shock)!important}
-  .rc-cpr{border-left-color:var(--ok)!important}
-  .rc-cause{border-left-color:var(--cause)!important}
-  .rc-rosc{border-left-color:var(--gold)!important}
-  .ref table{width:100%;border-collapse:collapse;font-size:.82rem}
-  .ref td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
-  .ref td:first-child{color:var(--muted);padding-right:10px;white-space:nowrap}
-  .ref tr:last-child td{border-bottom:none}
-  .ref .grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-  .htlist{list-style:none;padding:0;margin:0;font-size:.82rem}
-  .htlist li{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid var(--line)}
-  .htlist li:last-child{border:none}
-  .htlist .hh{color:var(--cause);font-weight:800;min-width:16px}
-  .cprg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-  .metric{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 6px;text-align:center}
-  .metric .v{font-size:1.15rem;font-weight:800;color:var(--gold);line-height:1}
-  .metric .l{font-size:.62rem;color:var(--muted);text-transform:uppercase;margin-top:3px}
-  .srcnote{font-size:.68rem;color:var(--muted);margin-top:14px;line-height:1.4}
-  .srcnote a{color:var(--noshock)}
-  .mini{display:flex;flex-direction:column;gap:6px}
-  .mini .mrow{display:flex;align-items:center;gap:8px;font-size:.82rem;background:var(--panel);
-    border:1px solid var(--line);border-radius:10px;padding:7px 10px}
-  .mini .mn{width:20px;height:20px;border-radius:6px;background:var(--panel2);display:grid;place-items:center;font-weight:800;font-size:.72rem;color:var(--gold);flex:0 0 auto}
+  footer{font-size:.55rem;color:#5d6c94;text-align:center;line-height:1.35;padding:3px 6px 0}
+  footer a{color:#6ea8d8;text-decoration:none}
+  footer b{color:#c98a8a}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="page">
 
   <header>
     <div class="logo" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.8 9.6 2.2 6 5.5 6c2 0 3.2 1.2 3.9 2.3M12 21s7-4.35 9.5-8.5C23.2 9.6 21.8 6 18.5 6c-2 0-3.2 1.2-3.9 2.3" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h4l1.5-4 2.5 7 2-9 2 6 1.5 0 3 0" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.8 9.6 2.2 6 5.5 6c2 0 3.2 1.2 3.9 2.3M12 21s7-4.35 9.5-8.5C23.2 9.6 21.8 6 18.5 6c-2 0-3.2 1.2-3.9 2.3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h4l1.5-4 2.5 7 2-9 2 6 1.5 0 3 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
-    <div class="ht">
-      <div class="t1">Arrêt cardiaque · ALS adulte</div>
-      <div class="t2">Conduite à tenir · ERC 2025 · hors-ligne</div>
-    </div>
-    <button class="tab-btn" id="tabBtn" onclick="toggleRef()">📋 Fiches</button>
+    <div class="t1">Arrêt cardiaque · ALS adulte</div>
+    <div class="t2"><b>ERC 2025</b><br>hors-ligne</div>
   </header>
 
-  <!-- State chips -->
-  <div class="chips" id="chips">
-    <div class="chip"><div class="n" id="cCycle">0</div><div class="l">Cycle</div></div>
-    <div class="chip"><div class="n" id="cShock">0</div><div class="l">Chocs</div></div>
-    <div class="chip"><div class="n" id="cAdr">0</div><div class="l">Adré</div></div>
-    <div class="chip"><div class="n" id="cAmio">0</div><div class="l">Amiod.</div></div>
+  <div class="n n-start"><span class="num">1</span>
+    <div class="t">🚨 Inconscient · respiration absente / anormale → <b>RCP 30:2</b></div>
+    <div class="s">Appeler l'équipe d'arrêt · O₂ · <b>moniteur / défibrillateur</b> dès que possible</div>
   </div>
+  <div class="ar">▼</div>
 
-  <!-- ===== Assistant ===== -->
-  <div class="main-wrap">
-    <main>
-      <!-- ASK -->
-      <div id="askView" style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0">
-        <div class="ask-q" id="askQ">Rythme au monitorage&nbsp;?<small id="askSub">Débuter la RCP + poser le défibrillateur, puis analyser</small></div>
-        <div class="rbtns">
-          <button class="rbtn r-shock" onclick="choose('shock')">
-            <span class="em">⚡</span><span class="sb"><span class="rt">CHOQUABLE</span><br><span class="rs">FV / TV sans pouls</span></span>
-          </button>
-          <button class="rbtn r-noshock" onclick="choose('noshock')">
-            <span class="em">🚫</span><span class="sb"><span class="rt">NON CHOQUABLE</span><br><span class="rs">Asystolie / AESP (DEM)</span></span>
-          </button>
-          <button class="rbtn r-rosc" onclick="choose('rosc')">
-            <span class="em">💓</span><span class="sb"><span class="rt">POULS / RACS</span><br><span class="rs">Signes de vie · reprise circulatoire</span></span>
-          </button>
-        </div>
+  <div class="dec dec-main">Rythme choquable&nbsp;?</div>
+  <div class="yn"><span class="y">Oui ▼</span><span class="nn">Non ▼</span></div>
+
+  <div class="cols">
+
+    <!-- ===== voie choquable ===== -->
+    <div class="col col-shock">
+      <div class="colhead">⚡ FV · TV sans pouls</div>
+      <div class="n n-shock"><span class="num">2</span><div class="t">⚡ CHOC <span class="s">≥ 150 J biphasique</span></div></div>
+      <div class="ar">▼</div>
+      <div class="n n-cpr"><span class="num">3</span>
+        <div class="t">RCP 2 min</div>
+        <div class="s">Abord <b>IV / IO</b></div>
       </div>
-
-      <!-- RESULT -->
-      <div id="resView" style="display:none;flex:1;flex-direction:column;gap:8px;min-height:0">
-        <div class="res-h"><span class="rh-t">Conduite à tenir</span><span class="rh-ctx" id="resCtx"></span></div>
-        <ol class="steps" id="steps"></ol>
+      <div class="ar">▼</div>
+      <div class="dec">choquable&nbsp;?</div>
+      <div class="ynr"><span class="y">Oui ▼</span><span class="nn">Non <span class="goto">→ ⑧</span></span></div>
+      <div class="n n-shock"><span class="num">4</span><div class="t">⚡ CHOC</div></div>
+      <div class="ar">▼</div>
+      <div class="n n-adr"><span class="num">5</span>
+        <div class="t">RCP 2 min + 💉 Adrénaline 1 mg</div>
+        <div class="s">après le <b>3ᵉ choc</b>*, puis <b>toutes les 3–5 min</b> · voie aérienne avancée + <b>capnographie</b></div>
       </div>
-    </main>
-
-    <div class="acts" id="acts" style="display:none">
-      <button class="ghost" onclick="undo()">↶</button>
-      <button class="primary" id="nextBtn" onclick="nextCycle()">Réanalyser le rythme →</button>
+      <div class="ar">▼</div>
+      <div class="dec">choquable&nbsp;?</div>
+      <div class="ynr"><span class="y">Oui ▼</span><span class="nn">Non <span class="goto">→ ⑧</span></span></div>
+      <div class="n n-shock"><span class="num">6</span><div class="t">⚡ CHOC</div></div>
+      <div class="ar">▼</div>
+      <div class="n n-amio"><span class="num">7</span>
+        <div class="t">RCP 2 min + 💊 Amiodarone</div>
+        <div class="s"><b>300 mg</b> après 3 chocs · <b>150 mg</b> après 5 chocs · traiter <b>causes réversibles</b></div>
+      </div>
+      <div class="loopnote">↻ poursuivre le cycle : <b>choc → RCP 2 min</b> · adré / 3–5 min</div>
     </div>
 
-    <div class="disc"><b>Aide-mémoire pédagogique</b> — ne remplace pas le jugement clinique. D'après ERC 2025. Vérifier la reco en vigueur.</div>
+    <!-- ===== voie non choquable ===== -->
+    <div class="col col-ns">
+      <div class="colhead">🚫 Asystolie · AESP</div>
+      <div class="n n-adr"><span class="num">8</span>
+        <div class="t">💉 Adrénaline 1 mg</div>
+        <div class="s"><b>dès que possible</b>, puis toutes les <b>3–5 min</b></div>
+      </div>
+      <div class="ar">▼</div>
+      <div class="n n-cpr"><span class="num">9</span>
+        <div class="t">RCP 2 min</div>
+        <div class="s">Abord <b>IV / IO</b> · voie aérienne avancée + <b>capnographie</b></div>
+      </div>
+      <div class="ar">▼</div>
+      <div class="dec">choquable&nbsp;?</div>
+      <div class="ynr"><span class="y">Oui <span class="goto">→ ②</span></span><span class="nn">Non ▼</span></div>
+      <div class="n n-cpr"><span class="num">10</span>
+        <div class="t">RCP 2 min</div>
+        <div class="s">Traiter <b>causes réversibles</b> (4H / 4T)</div>
+      </div>
+      <div class="loopnote">↻ réanalyser toutes les <b>2 min</b></div>
+
+      <!-- fiches logées dans l'espace libre de la branche courte -->
+      <div class="info i-q">
+        <div class="h">❤️ QUALITÉ RCP</div>
+        <ul>
+          <li><b>100–120</b>/min · <b>5–6 cm</b> · relâchement complet</li>
+          <li>Pauses <b>&lt; 5 s</b> · intubé : compressions <b>continues</b>, ~10 vent./min</li>
+        </ul>
+      </div>
+      <div class="info i-e">
+        <div class="h">⚡ ÉNERGIE</div>
+        <ul>
+          <li>Biphasique <b>≥ 150 J</b> · pulsé <b>130–150 J</b> · <b>croissante</b></li>
+        </ul>
+      </div>
+      <div class="info i-d">
+        <div class="h">💉 PHARMACO (IV / IO)</div>
+        <ul>
+          <li>Adrénaline <b>1 mg / 3–5 min</b> (*choquable : après 3ᵉ choc)</li>
+          <li>Amiodarone <b>300 mg</b> puis <b>150 mg</b> · ou Lidocaïne 100/50 mg</li>
+        </ul>
+      </div>
+      <div class="info i-c">
+        <div class="h">🔎 CAUSES RÉVERSIBLES (4H / 4T)</div>
+        <ul>
+          <li><span class="hh">H</span> Hypoxie · Hypovolémie · Hypo/hyperK⁺ · Hypo/hyperthermie</li>
+          <li><span class="hh">T</span> Thrombose (coro/EP) · pneumoThorax · Tamponnade · Toxiques</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <!-- ===== Reference ===== -->
-  <div class="ref" id="ref">
-    <h3>💉 Médicaments</h3>
-    <div class="card rc-drug"><table>
-      <tr><td>Adrénaline</td><td><b>1 mg</b> IV/IO — non choquable : <b>d'emblée</b> ; choquable : <b>après le 3ᵉ choc</b> — puis <b>toutes les 3–5 min</b> (1 cycle sur 2)</td></tr>
-      <tr><td>Amiodarone</td><td><b>300 mg</b> après 3 chocs, puis <b>150 mg</b> après 5 chocs</td></tr>
-      <tr><td>Lidocaïne</td><td>Alternative : 100 mg puis 50 mg</td></tr>
-    </table></div>
-
-    <h3>⚡ Défibrillation</h3>
-    <div class="card rc-energy"><table>
-      <tr><td>Biphasique</td><td><b>≥ 150 J</b> (1er choc), identique ou croissant</td></tr>
-      <tr><td>Biph. pulsé</td><td><b>130–150 J</b></td></tr>
-      <tr><td>Pause</td><td>Pré/post-choc <b>&lt; 5 s</b></td></tr>
-    </table></div>
-
-    <h3>❤️ Qualité RCP</h3>
-    <div class="cprg">
-      <div class="metric"><div class="v">100–120</div><div class="l">/min</div></div>
-      <div class="metric"><div class="v">5–6 cm</div><div class="l">profondeur</div></div>
-      <div class="metric"><div class="v">30:2</div><div class="l">ratio</div></div>
-    </div>
-
-    <h3>🔎 Causes réversibles — 4H / 4T</h3>
-    <div class="card rc-cause"><ul class="htlist">
-      <li><span class="hh">H</span> Hypoxie</li>
-      <li><span class="hh">H</span> Hypovolémie</li>
-      <li><span class="hh">H</span> Hypo/Hyperkaliémie & métabolique</li>
-      <li><span class="hh">H</span> Hypo/Hyperthermie</li>
-      <li><span class="hh">T</span> Thrombose (coronaire / pulmonaire)</li>
-      <li><span class="hh">T</span> pneumoThorax sous tension</li>
-      <li><span class="hh">T</span> Tamponnade</li>
-      <li><span class="hh">T</span> Toxiques</li>
-    </ul></div>
-
-    <h3>🔁 Algorithme (résumé)</h3>
-    <div class="mini">
-      <div class="mrow"><span class="mn">1</span> Reconnaître l'arrêt · alerter · RCP 30:2</div>
-      <div class="mrow"><span class="mn">2</span> Poser défibrillateur · analyser le rythme</div>
-      <div class="mrow"><span class="mn">3</span> Choquable → choc + RCP · Non choquable → adré + RCP</div>
-      <div class="mrow"><span class="mn">4</span> Boucle 2 min : voie aérienne, IV/IO, causes réversibles</div>
-      <div class="mrow"><span class="mn">5</span> RACS → prise en charge post-arrêt (ABCDE)</div>
-    </div>
-
-    <div class="card rc-rosc" style="margin-top:10px"><b>Post-arrêt (RACS) :</b> ABCDE · SpO₂ 94–98 % · normocapnie · ECG 12 dérivations (coronarographie si STEMI) · éviter la fièvre · glycémie contrôlée.</div>
-
-    <p class="srcnote">Sources : <a href="https://www.cprguidelines.eu/" target="_blank" rel="noopener">ERC Guidelines 2025</a>, <a href="https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-advanced-life-support-guidelines" target="_blank" rel="noopener">RCUK 2025</a>. France : reco relayée par le CFRC / SFMU. Contenu original reformulé — aucun schéma ERC/AHA reproduit. Usage non commercial. <b>Pas un dispositif médical.</b></p>
+  <div class="ar">▼</div>
+  <div class="n n-rosc"><span class="num">11</span>
+    <div class="t">💓 Signes de RACS&nbsp;? → soins post-arrêt</div>
+    <div class="s">ABCDE · SpO₂ <b>94–98 %</b> · normocapnie · <b>ECG 12 dér.</b> (coro si STEMI) · éviter la fièvre · glycémie · sinon → poursuivre <b>② / ⑧</b></div>
   </div>
+
+  <footer>
+    D'après <a href="https://www.cprguidelines.eu/" target="_blank" rel="noopener">ERC Guidelines 2025</a> (reco officielle, relayée en France par CFRC/SFMU) · design et texte originaux, sources citées · usage non commercial ·
+    <b>aide-mémoire pédagogique — ne remplace pas le jugement clinique · pas un dispositif médical</b>
+  </footer>
 
 </div>
 
 <script>
-(function(){
-  "use strict";
-  var $=function(id){return document.getElementById(id)};
-  var s, history=[];
-  function fresh(){return {cycle:0,shocks:0,adr:0,amio:0,lastAdr:-99}}
-  s=fresh();
-
-  function adrDue(){ return s.adr===0 || (s.cycle - s.lastAdr) >= 2; }
-
-  function renderChips(){
-    $("cCycle").textContent=s.cycle;
-    $("cShock").textContent=s.shocks;
-    $("cAdr").textContent=s.adr;
-    $("cAmio").textContent=s.amio;
-  }
-
-  function stepHTML(k,em,t,ss){
-    return '<li class="step k-'+k+'"><span class="se">'+em+'</span><span class="sb">'+
-      '<span class="st">'+t+'</span>'+(ss?'<span class="ss">'+ss+'</span>':'')+'</span></li>';
-  }
-
-  window.choose=function(r){
-    history.push(JSON.stringify(s));
-    s.cycle++;
-    var steps='', ctx='', ctxCls='';
-
-    if(r==='rosc'){
-      ctx='RACS'; ctxCls='ctx-rosc';
-      steps+=stepHTML('cpr','✅','RACS confirmé','Onde de pouls / ETCO₂ · conscience · mouvements');
-      steps+=stepHTML('info','🫁','Oxygénation & ventilation','SpO₂ 94–98 % · normocapnie (EtCO₂)');
-      steps+=stepHTML('info','📈','ECG 12 dérivations','Coronarographie si STEMI / cause coronaire');
-      steps+=stepHTML('cause','🌡️','Éviter la fièvre · glycémie','Contrôle ciblé de température · normoglycémie');
-      steps+=stepHTML('warn','⚠️','Surveillance rapprochée','Récidive possible → reprendre l\'analyse si ré-arrêt');
-      $("nextBtn").textContent='Nouveau contrôle du rythme →';
-    }
-    else if(r==='shock'){
-      ctxCls='ctx-shock'; s.shocks++;
-      ctx='Choquable · choc n°'+s.shocks;
-      steps+=stepHTML('shock','⚡','Défibriller · 1 choc ≥ 150 J','Énergie ≥ précédent · pause péri-choc < 5 s');
-      steps+=stepHTML('cpr','❤️','RCP 2 min IMMÉDIATE','Reprise sans attendre · 30:2 (ou continu si intubé)');
-      if(s.shocks>=3 && adrDue()){ s.adr++; s.lastAdr=s.cycle;
-        steps+=stepHTML('drug','💉','Adrénaline 1 mg IV/IO', s.adr===1?'1ʳᵉ dose (après le 3ᵉ choc)':'Dose n°'+s.adr+' · intervalle 3–5 min'); }
-      if(s.shocks===3){ s.amio++; steps+=stepHTML('amio','💊','Amiodarone 300 mg IV/IO','Après 3 chocs'); }
-      else if(s.shocks===5){ s.amio++; steps+=stepHTML('amio','💊','Amiodarone 150 mg IV/IO','Après 5 chocs'); }
-      steps+=stepHTML('cause','🔎','Traiter les causes réversibles','4H / 4T (voir Fiches)');
-      $("nextBtn").textContent='Réanalyser le rythme →';
-    }
-    else { // noshock
-      ctxCls='ctx-noshock'; ctx='Non choquable';
-      if(adrDue()){ s.adr++; s.lastAdr=s.cycle;
-        steps+=stepHTML('drug','💉','Adrénaline 1 mg IV/IO', s.adr===1?'DÈS QUE POSSIBLE (1ʳᵉ dose)':'Dose n°'+s.adr+' · intervalle 3–5 min'); }
-      else steps+=stepHTML('info','⏳','Pas de nouvelle adrénaline','Dernière < 3–5 min · prochaine au contrôle suivant');
-      steps+=stepHTML('warn','🚫','Pas de choc','Rythme non défibrillable');
-      steps+=stepHTML('cpr','❤️','RCP 2 min','30:2 (ou continu si intubé) · minimiser les pauses');
-      steps+=stepHTML('cause','🔎','Causes réversibles','Surtout hypoxie & hypovolémie · 4H/4T');
-      $("nextBtn").textContent='Réanalyser le rythme →';
-    }
-
-    $("steps").innerHTML=steps;
-    $("resCtx").textContent=ctx; $("resCtx").className='rh-ctx '+ctxCls;
-    $("askView").style.display='none';
-    $("resView").style.display='flex';
-    $("acts").style.display='flex';
-    renderChips();
-  };
-
-  window.nextCycle=function(){
-    $("resView").style.display='none';
-    $("acts").style.display='none';
-    $("askView").style.display='flex';
-    $("askQ").innerHTML='Rythme au monitorage&nbsp;?<small>Cycle '+(s.cycle+1)+' · après 2 min de RCP</small>';
-  };
-
-  window.undo=function(){
-    if(!history.length) return;
-    s=JSON.parse(history.pop());
-    renderChips();
-    $("resView").style.display='none';
-    $("acts").style.display='none';
-    $("askView").style.display='flex';
-    $("askQ").innerHTML= s.cycle===0
-      ? 'Rythme au monitorage&nbsp;?<small>Débuter la RCP + poser le défibrillateur, puis analyser</small>'
-      : 'Rythme au monitorage&nbsp;?<small>Cycle '+(s.cycle+1)+' · après 2 min de RCP</small>';
-  };
-
-  window.toggleRef=function(){
-    var on=document.body.classList.toggle('show-ref');
-    $("tabBtn").textContent= on ? '← Assistant' : '📋 Fiches';
-  };
-
-  renderChips();
-})();
-
 if("serviceWorker" in navigator){
   window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 }
