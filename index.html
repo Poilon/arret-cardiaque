@@ -17,16 +17,8 @@
     --shock:#e0364b; --med:#6d4bd6; --amio:#c026a6; --cause:#0e9488; --ok:#15803d;
     --neutral-bg:#eaeef5; --gold:#b45309; --line-flow:#9db4d4;
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b1020; --card:#161f38; --ink:#eaf0fb; --muted:#93a5c8; --hair:#2b3757;
-      --rcp-bg:#122a44; --rcp-bd:#4a94dd; --rcp-ink:#bfe0ff;
-      --dec-bg:#3a1620; --dec-bd:#f0566c; --dec-ink:#ffc4cd;
-      --shock:#f0566c; --med:#b79bff; --amio:#ee6fd0; --cause:#2dd4bf; --ok:#4ade80;
-      --neutral-bg:#1b2340; --gold:#fbbf24; --line-flow:#3d4c72;
-    }
-  }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{color-scheme:light}
   html,body{margin:0}
   body{background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%;
     font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
@@ -73,30 +65,27 @@
     clip-path:polygon(15px 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,15px 100%,0 50%)}
   .dec.small{font-size:.7rem;padding:7px 17px}
 
-  /* thin arrows */
-  .a{width:2px;background:var(--line-flow);margin:5px auto;height:15px;position:relative}
+  /* thin arrows (longues, elles tirent l'œil vers la suite) */
+  .a{width:2px;background:var(--line-flow);margin:11px auto;height:30px;position:relative}
   .a::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);
-    border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--line-flow)}
-  .a.sm{height:10px;margin:3px auto}
+    border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line-flow)}
+  .a.sm{height:22px;margin:8px auto}
 
-  .yn{display:flex;justify-content:center;gap:40px;font-size:.66rem;font-weight:800;margin:4px 0 2px}
-  .yn .y{color:var(--ok)} .yn .n{color:var(--muted)}
-  .ynrow{display:flex;justify-content:space-between;font-size:.63rem;font-weight:800;margin:3px 3px 0}
-  .ynrow .y{color:var(--ok)} .ynrow .n{color:var(--muted)}
-  .goto{color:var(--rcp-bd)}
+  /* flèches diagonales Oui/Non (vraies flèches dessinées) */
+  .splitarr{display:block;width:100%;max-width:340px;height:auto;margin:6px auto 2px}
+  .subarr{display:block;width:100%;height:auto;margin:4px auto 2px}
+  .lblY{fill:var(--ok);font-weight:800;font-size:15px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .lblN{fill:var(--muted);font-weight:800;font-size:15px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .subarr .lblY,.subarr .lblN{font-size:14px}
 
   /* two branches inside the algo column */
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;margin-top:2px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-top:6px}
   .col{display:flex;flex-direction:column}
-  .col>*+*{margin-top:6px}
+  .col>*+*{margin-top:12px}
   .chead{font-weight:800;font-size:.72rem;text-align:center;padding:6px 4px;border-radius:9px;
     display:flex;gap:5px;align-items:center;justify-content:center}
   .c-shock .chead{background:#fbe7c8;color:#8a5205}
   .c-ns .chead{background:#d7ecfb;color:#0f4d80}
-  @media(prefers-color-scheme:dark){
-    .c-shock .chead{background:#4a3410;color:#f4cf8f}
-    .c-ns .chead{background:#13314a;color:#bfe0ff}
-  }
   .col .box{padding:7px 8px}
   .col .box .t{font-size:.76rem}
   .col .shock{font-size:.76rem;padding:5px 12px}
@@ -129,8 +118,9 @@
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" markerWidth="7" markerHeight="7" refX="5.2" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#7e96bd"/></marker>
   <symbol id="bolt" viewBox="0 0 24 24"><path d="M13 1 3 14h7l-1 9 11-14h-7l0-8z"/></symbol>
-  <symbol id="syringe" viewBox="0 0 24 24"><path d="M19.5 2.5 21.5 4.5M17 5l2 2M4 20l1.5.001M3 21l3-3m3.5-.5-2-2m8-8-8 8m5.5-11L21 8.5 15.5 14 10 8.5 15.5 3z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="syringe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 16 4 4"/><path d="m14 4 6 6"/></g></symbol>
   <symbol id="pill" viewBox="0 0 24 24"><rect x="2.5" y="9" width="19" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v6" stroke="currentColor" stroke-width="1.8"/></symbol>
   <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
   <symbol id="heart" viewBox="0 0 24 24"><path d="M12 20S3.5 14.5 3.5 8.6C3.5 5.8 5.6 4 8 4c1.6 0 2.9 1 4 2.3C13.1 5 14.4 4 16 4c2.4 0 4.5 1.8 4.5 4.6C20.5 14.5 12 20 12 20z" fill="currentColor"/></symbol>
@@ -156,7 +146,12 @@
       <div class="box start"><div class="t"><span class="tagi"><svg class="i-rcp"><use href="#heart"/></svg></span> RCP 30:2</div><div class="mini">O₂ · moniteur / défibrillateur</div></div>
       <div class="a"></div>
       <div class="decwrap"><div class="dec">Rythme choquable&nbsp;?</div></div>
-      <div class="yn"><span class="y">◀ Oui</span><span class="n">Non ▶</span></div>
+      <svg class="splitarr" viewBox="0 0 320 68" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <path d="M160 5 Q118 34 74 60" fill="none" stroke="#7e96bd" stroke-width="2.6" marker-end="url(#ah)"/>
+        <path d="M160 5 Q202 34 246 60" fill="none" stroke="#7e96bd" stroke-width="2.6" marker-end="url(#ah)"/>
+        <text class="lblY" x="92" y="32">Oui</text>
+        <text class="lblN" x="228" y="32">Non</text>
+      </svg>
 
       <div class="cols">
         <!-- choquable -->
@@ -166,12 +161,22 @@
           <div class="a sm"></div>
           <div class="box rcp"><div class="t">RCP 2 min</div></div>
           <div class="decwrap"><div class="dec small">choquable&nbsp;?</div></div>
-          <div class="ynrow"><span class="y">Oui</span><span class="n">Non→⑧</span></div>
+          <svg class="subarr" viewBox="0 0 168 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path d="M62 4 L62 42" fill="none" stroke="#7e96bd" stroke-width="2.4" marker-end="url(#ah)"/>
+            <text class="lblY" x="32" y="28">Oui</text>
+            <path d="M92 6 Q142 12 158 34" fill="none" stroke="#7e96bd" stroke-width="2.2" marker-end="url(#ah)"/>
+            <text class="lblN" x="96" y="18">Non ⑧</text>
+          </svg>
           <div class="shockwrap"><span class="shock"><svg><use href="#bolt"/></svg> CHOC</span></div>
           <div class="a sm"></div>
           <div class="box rcp"><div class="t">RCP 2 min</div><span class="marker adr"><svg><use href="#syringe"/></svg> Adré · 3ᵉ choc</span></div>
           <div class="decwrap"><div class="dec small">choquable&nbsp;?</div></div>
-          <div class="ynrow"><span class="y">Oui</span><span class="n">Non→⑧</span></div>
+          <svg class="subarr" viewBox="0 0 168 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path d="M62 4 L62 42" fill="none" stroke="#7e96bd" stroke-width="2.4" marker-end="url(#ah)"/>
+            <text class="lblY" x="32" y="28">Oui</text>
+            <path d="M92 6 Q142 12 158 34" fill="none" stroke="#7e96bd" stroke-width="2.2" marker-end="url(#ah)"/>
+            <text class="lblN" x="96" y="18">Non ⑧</text>
+          </svg>
           <div class="shockwrap"><span class="shock"><svg><use href="#bolt"/></svg> CHOC</span></div>
           <div class="a sm"></div>
           <div class="box rcp"><div class="t">RCP 2 min</div><span class="marker amio"><svg><use href="#pill"/></svg> Amiodarone</span></div>
@@ -182,7 +187,12 @@
           <div class="chead">🚫 Asystolie / AESP</div>
           <div class="box rcp"><div class="t">RCP 2 min</div><span class="marker adr"><svg><use href="#syringe"/></svg> Adré d'emblée</span></div>
           <div class="decwrap"><div class="dec small">choquable&nbsp;?</div></div>
-          <div class="ynrow"><span class="y">Oui→②</span><span class="n">Non</span></div>
+          <svg class="subarr" viewBox="0 0 168 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path d="M106 4 L106 42" fill="none" stroke="#7e96bd" stroke-width="2.4" marker-end="url(#ah)"/>
+            <text class="lblN" x="112" y="28">Non</text>
+            <path d="M76 6 Q26 12 10 34" fill="none" stroke="#7e96bd" stroke-width="2.2" marker-end="url(#ah)"/>
+            <text class="lblY" x="14" y="18">Oui ②</text>
+          </svg>
           <div class="box rcp"><div class="t">RCP 2 min</div></div>
           <div class="loop">↻ réanalyser<br>toutes les <b>2 min</b></div>
         </div>
