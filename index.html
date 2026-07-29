@@ -3,254 +3,544 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#eef2f8">
-<meta name="description" content="Algorithme de l'arrêt cardiaque adulte (ALS) — organigramme épuré + posologies à côté, d'après ERC Guidelines 2025. Hors-ligne, pour médecins et internes.">
-<title>Arrêt cardiaque — ALS adulte (ERC 2025)</title>
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="Algorithme de l'arrêt cardiaque chez l'adulte (FV/TVsp/Asystolie/AESP) — organigramme complet, qualité de la RCR, énergies de choc, pharmacothérapie et causes réversibles. Hors-ligne, pour médecins et internes.">
+<title>Algorithme de l'arrêt cardiaque chez l'adulte</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <style>
   :root{
-    --bg:#eef2f8; --card:#ffffff; --ink:#14243d; --muted:#5c6d88; --hair:#d3dced;
-    --rcp-bg:#e6f1fd; --rcp-bd:#2f74c0; --rcp-ink:#134a80;
-    --dec-bg:#fde3e6; --dec-bd:#e0364b; --dec-ink:#9c1626;
-    --shock:#e0364b; --med:#6d4bd6; --amio:#c026a6; --cause:#0e9488; --ok:#15803d;
-    --neutral-bg:#eaeef5; --gold:#b45309; --line-flow:#9db4d4;
+    --navy:#0d3c54;
+    --navy-2:#14506e;
+    --teal:#17879b;
+    --red:#e23c22;
+    --orange:#f2921c;
+    --ink:#12303f;
+    --hair:#c9d4dc;
+    --paper:#ffffff;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{color-scheme:light}
-  html,body{margin:0}
-  body{background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%;
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .sheet{max-width:540px;margin:0 auto;padding:calc(9px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom))}
+  html,body{margin:0;background:var(--paper)}
+  body{
+    color:var(--ink);-webkit-text-size-adjust:100%;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
+  }
+  .poster{max-width:1480px;margin:0 auto}
 
-  header{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-  .logo{width:28px;height:28px;flex:0 0 auto;border-radius:8px;background:linear-gradient(135deg,#ef4444,#b91c1c);display:grid;place-items:center}
-  .logo svg{width:17px;height:17px}
-  .htitle{font-weight:800;font-size:.98rem;line-height:1.05}
-  .hsub{font-size:.64rem;color:var(--muted)}
-  .badge{margin-left:auto;font-size:.62rem;font-weight:800;color:#fff;background:var(--rcp-bd);padding:4px 9px;border-radius:999px}
+  /* ---------------- title ---------------- */
+  .phead{margin-bottom:14px}
+  .phead h1{
+    margin:0;font-size:clamp(19px,3.1vw,33px);line-height:1.08;
+    font-weight:800;letter-spacing:-.01em;color:var(--navy);text-transform:uppercase;
+  }
+  .phead p{margin:2px 0 0;font-size:clamp(14px,2vw,21px);font-weight:700;color:var(--teal)}
 
-  /* flow layout : algo (gauche) + posologies (droite) */
-  .layout{display:grid;grid-template-columns:1fr;gap:12px}
-  @media(min-width:460px){ .layout{grid-template-columns:1.35fr .9fr} }
+  /* ---------------- overall grid ---------------- */
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:1080px){ .grid{grid-template-columns:minmax(0,2.62fr) minmax(255px,1fr)} }
 
-  /* boxes */
-  .box{background:var(--card);border:1px solid var(--hair);border-radius:11px;padding:8px 11px;position:relative;
-    box-shadow:0 1px 2px rgba(20,40,80,.05);text-align:center}
-  .box .t{font-weight:800;font-size:.84rem;line-height:1.15}
-  .box .mini{font-size:.66rem;color:var(--muted);font-weight:600;margin-top:2px}
-  .rcp{background:var(--rcp-bg);border-color:var(--rcp-bd)}
-  .rcp .t{color:var(--rcp-ink)}
-  .start{background:var(--rcp-bg);border-color:var(--rcp-bd)}
-  .start .t{color:var(--rcp-ink);display:flex;gap:6px;align-items:center;justify-content:center}
-  .neutral{background:var(--neutral-bg)}
+  /* ---------------- flow ---------------- */
+  .flowscroll{overflow-x:auto;padding-bottom:4px}
+  .flow{min-width:920px}
+  .row{display:flex;align-items:stretch;gap:0}
+  .row + .row{margin-top:16px}
 
-  /* med marker inside a box (icône = quand, pas la dose) */
-  .marker{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:.72rem;font-weight:800}
-  .marker.adr{color:var(--med)} .marker.amio{color:var(--amio)}
-  .marker svg{width:14px;height:14px}
-  .marker .adr-i{fill:var(--med)}
+  .node{
+    background:var(--paper);border:1.6px solid var(--navy);border-radius:9px;
+    padding:9px 9px 10px;position:relative;flex:0 0 auto;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .node .nt{font-weight:800;font-size:12.5px;line-height:1.13;text-align:center;color:var(--navy);text-transform:uppercase}
+  .node .ns{font-weight:800;font-size:11px;color:var(--navy);text-transform:uppercase;margin-top:1px}
+  .node ul{margin:7px 0 0;padding:0;list-style:none;font-size:10.5px;line-height:1.32;color:var(--ink);align-self:stretch}
+  .node li{position:relative;padding-left:8px;margin-top:4px}
+  .node li:first-child{margin-top:0}
+  .node li::before{content:"•";position:absolute;left:0;top:-1px;color:var(--ink)}
 
-  /* shock chip */
-  .shockwrap{display:flex;justify-content:center}
-  .shock{display:inline-flex;align-items:center;gap:6px;background:var(--shock);color:#fff;font-weight:800;
-    font-size:.82rem;padding:6px 15px;border-radius:9px;box-shadow:0 2px 5px rgba(224,54,75,.28)}
-  .shock svg{width:15px;height:15px;fill:#fff}
+  .node.shock{border-color:var(--red)}
+  .node.shock .nt{color:var(--red)}
+  .num{
+    position:absolute;top:-11px;left:-11px;width:22px;height:22px;border-radius:50%;
+    background:var(--navy);color:#fff;font-size:12px;font-weight:800;
+    display:grid;place-items:center;line-height:1;
+  }
+  .num.r{background:var(--red)}
 
-  /* decision diamond */
-  .decwrap{display:flex;justify-content:center}
-  .dec{background:var(--dec-bg);border:1.5px solid var(--dec-bd);color:var(--dec-ink);font-weight:800;
-    font-size:.78rem;text-align:center;padding:8px 22px;
-    clip-path:polygon(15px 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,15px 100%,0 50%)}
-  .dec.small{font-size:.7rem;padding:7px 17px}
+  /* entry blocks */
+  .entry{
+    flex:0 0 118px;border-radius:9px;color:#fff;padding:12px 10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;
+    align-self:center;
+  }
+  .entry.red{background:var(--red)}
+  .entry.navy{background:var(--navy)}
+  .entry .et{font-size:11.5px;font-weight:800;line-height:1.16;text-transform:uppercase}
+  .entry .es{font-size:10.5px;font-weight:700;opacity:.95}
+  .entry svg{width:30px;height:30px}
 
-  /* thin arrows (longues, elles tirent l'œil vers la suite) */
-  .a{width:2px;background:var(--line-flow);margin:11px auto;height:30px;position:relative}
-  .a::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);
-    border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line-flow)}
-  .a.sm{height:22px;margin:8px auto}
+  /* diamond */
+  .diamond{
+    flex:0 0 132px;align-self:center;position:relative;
+    display:grid;place-items:center;text-align:center;
+  }
+  .diamond .dbody{
+    width:132px;height:104px;background:var(--red);
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    display:grid;place-items:center;padding:0 16px;
+  }
+  .diamond span{color:#fff;font-size:10.5px;font-weight:800;line-height:1.15;text-transform:uppercase}
 
-  /* flèches diagonales Oui/Non (vraies flèches dessinées) */
-  .splitarr{display:block;width:100%;max-width:340px;height:auto;margin:6px auto 2px}
-  .subarr{display:block;width:100%;height:auto;margin:4px auto 2px}
-  .lblY{fill:var(--ok);font-weight:800;font-size:15px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-  .lblN{fill:var(--muted);font-weight:800;font-size:15px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-  .subarr .lblY,.subarr .lblN{font-size:14px}
+  /* connectors */
+  .link{flex:0 0 auto;align-self:center;display:flex;align-items:center;position:relative}
+  .link .ln{height:2px;background:var(--navy);width:100%}
+  .link::after{
+    content:"";width:0;height:0;flex:0 0 auto;
+    border-top:5px solid transparent;border-bottom:5px solid transparent;
+    border-left:8px solid var(--navy);
+  }
+  .link.w26{width:26px}
+  .link.w34{width:34px}
+  .link.w46{width:46px}
+  .link .ln{flex:1 1 auto}
+  .link .lbl{
+    position:absolute;top:-17px;left:50%;transform:translateX(-50%);
+    font-size:11px;font-weight:800;color:var(--red);letter-spacing:.02em;
+  }
+  .link.oui .ln,.link.oui::after{border-left-color:var(--red)}
+  .link.oui .ln{background:var(--red)}
 
-  /* two branches inside the algo column */
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-top:6px}
-  .col{display:flex;flex-direction:column}
-  .col>*+*{margin-top:12px}
-  .chead{font-weight:800;font-size:.72rem;text-align:center;padding:6px 4px;border-radius:9px;
-    display:flex;gap:5px;align-items:center;justify-content:center}
-  .c-shock .chead{background:#fbe7c8;color:#8a5205}
-  .c-ns .chead{background:#d7ecfb;color:#0f4d80}
-  .col .box{padding:7px 8px}
-  .col .box .t{font-size:.76rem}
-  .col .shock{font-size:.76rem;padding:5px 12px}
-  .col .dec{font-size:.68rem;padding:6px 14px}
-  .loop{font-size:.63rem;color:var(--muted);text-align:center;line-height:1.3}
-  .loop b{color:var(--ink)}
+  /* branch note under diamond */
+  .branch{
+    flex:0 0 auto;align-self:center;font-size:11px;font-weight:800;color:var(--navy);
+    padding:0 8px;text-align:center;line-height:1.2;
+  }
 
-  /* side : posologies + repères */
-  .side{display:flex;flex-direction:column;gap:9px}
-  .panel{background:var(--card);border:1px solid var(--hair);border-radius:11px;padding:9px 11px;border-left:4px solid var(--hair)}
-  .panel .ph{font-weight:800;font-size:.72rem;margin-bottom:5px;display:flex;align-items:center;gap:6px}
-  .panel ul{margin:0;padding:0;list-style:none;font-size:.7rem;line-height:1.5;color:var(--muted)}
-  .panel li{padding:2px 0;border-bottom:1px dashed var(--hair)}
-  .panel li:last-child{border:none}
-  .panel li b{color:var(--ink)}
-  .p-dose{border-left-color:var(--med)} .p-dose .ph{color:var(--med)}
-  .p-energy{border-left-color:var(--shock)} .p-energy .ph{color:var(--shock)}
-  .p-cpr{border-left-color:var(--rcp-bd)} .p-cpr .ph{color:var(--rcp-ink)}
-  .p-cause{border-left-color:var(--cause)} .p-cause .ph{color:var(--cause)}
-  .p-rosc{border-left-color:var(--ok)} .p-rosc .ph{color:var(--ok)}
-  .hh{color:var(--cause);font-weight:800}
-  .tagi{display:inline-flex;width:15px;height:15px}
-  .tagi svg{width:15px;height:15px}
-  .i-med{fill:var(--med)} .i-amio{fill:var(--amio)} .i-shock{fill:var(--shock)} .i-cause{fill:var(--cause)} .i-rcp{fill:var(--rcp-bd)} .i-ok{fill:var(--ok)}
+  /* return rail */
+  .rail{position:relative;height:34px;margin:0 0 0 150px}
+  .rail .track{
+    position:absolute;left:0;right:6%;top:16px;height:0;
+    border-top:2px dashed var(--navy);
+  }
+  .rail .up{position:absolute;top:0;height:18px;width:0;border-left:2px dashed var(--navy)}
+  .rail .up::before{
+    content:"";position:absolute;top:-7px;left:-5px;
+    border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid var(--navy);
+  }
+  .rail .rlbl{
+    position:absolute;top:19px;left:50%;transform:translateX(-50%);
+    background:var(--paper);padding:0 8px;font-size:10.5px;font-weight:700;color:var(--navy);
+  }
 
-  footer{font-size:.58rem;color:var(--muted);text-align:center;line-height:1.4;margin-top:12px}
-  footer a{color:var(--rcp-bd);text-decoration:none}
-  footer b{color:var(--shock)}
+  /* epinephrine callout */
+  .epi{
+    margin:10px 0 0 150px;display:inline-flex;align-items:center;gap:8px;
+    border:1.6px dashed var(--red);border-radius:9px;padding:7px 12px;
+    color:var(--red);font-size:11px;font-weight:800;line-height:1.2;text-transform:uppercase;
+  }
+  .epi svg{width:17px;height:17px;flex:0 0 auto}
+
+  /* repeat bar */
+  .repeat{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+  @media(min-width:640px){ .repeat{grid-template-columns:1fr auto} }
+  .repeat .rb{
+    border:1.6px solid var(--navy);border-radius:9px;padding:10px 14px;
+    display:flex;align-items:center;gap:11px;
+  }
+  .repeat .rb svg{width:24px;height:24px;flex:0 0 auto;color:var(--teal)}
+  .repeat .rb b{display:block;font-size:12px;color:var(--teal);text-transform:uppercase;line-height:1.2}
+  .repeat .rb span{font-size:11.5px;color:var(--navy)}
+  .repeat .goto{
+    border:1.6px solid var(--navy);border-radius:9px;padding:10px 18px;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    font-size:12.5px;font-weight:800;color:var(--navy);text-transform:uppercase;white-space:nowrap;
+  }
+  .repeat .goto i{font-style:normal;color:var(--teal);font-size:16px;letter-spacing:-2px}
+
+  /* ---------------- panels ---------------- */
+  .side{display:flex;flex-direction:column;gap:12px}
+  .panel{border:1.5px solid var(--hair);border-radius:9px;overflow:hidden;background:var(--paper)}
+  .panel > h2{
+    margin:0;padding:7px 12px;font-size:12.5px;font-weight:800;
+    color:#fff;text-transform:uppercase;letter-spacing:.01em;line-height:1.2;
+  }
+  .panel.navy{border-color:var(--navy)}   .panel.navy > h2{background:var(--navy)}
+  .panel.teal{border-color:var(--teal)}   .panel.teal > h2{background:var(--teal)}
+  .panel.red{border-color:var(--red)}     .panel.red > h2{background:var(--red)}
+  .panel.orange{border-color:var(--orange)} .panel.orange > h2{background:var(--orange)}
+  .panel .body{padding:10px 13px 12px;font-size:11.5px;line-height:1.42}
+  .panel ul{margin:0;padding:0;list-style:none}
+  .panel li{position:relative;padding-left:11px;margin-top:7px}
+  .panel li:first-child{margin-top:0}
+  .panel li::before{content:"•";position:absolute;left:0;top:-1px;color:var(--ink)}
+  .panel li b{color:var(--navy)}
+  .panel .sub{list-style:none;margin:2px 0 0;padding:0 0 0 4px;color:#3d5a6b}
+  .panel .sub li{padding-left:9px}
+  .panel .sub li::before{content:"–"}
+
+  /* icon rows (qualité de la RCR) */
+  .iconrow{display:flex;gap:10px;align-items:flex-start;margin-top:9px}
+  .iconrow:first-child{margin-top:0}
+  .iconrow svg{width:22px;height:22px;flex:0 0 auto;color:var(--navy);margin-top:1px}
+
+  /* ---------------- bottom panels ---------------- */
+  .bottom{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+  @media(min-width:700px){ .bottom{grid-template-columns:1fr 1fr} }
+  @media(min-width:1080px){ .bottom{grid-template-columns:repeat(4,1fr)} }
+
+  .causes{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .causes div{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:11.5px}
+  .tag{
+    width:17px;height:17px;border-radius:50%;flex:0 0 auto;
+    display:grid;place-items:center;color:#fff;font-size:10px;font-weight:800;line-height:1;
+  }
+  .tag.h{background:var(--red)} .tag.t{background:var(--red)}
+
+  .warn{display:flex;gap:9px;align-items:flex-start;margin-top:10px;padding-top:10px;border-top:1px solid var(--hair)}
+  .warn svg{width:19px;height:19px;flex:0 0 auto;color:var(--navy);margin-top:1px}
+
+  .hicon{display:flex;align-items:center;gap:8px}
+  .hicon svg{width:18px;height:18px;flex:0 0 auto;color:var(--navy)}
+
+  footer{
+    margin-top:16px;padding-top:10px;border-top:1px solid var(--hair);
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;
+    font-size:10.5px;color:#5b7180;
+  }
+  footer .disc{flex-basis:100%;color:var(--red);font-weight:700}
 </style>
 </head>
 <body>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <marker id="ah" markerWidth="7" markerHeight="7" refX="5.2" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#7e96bd"/></marker>
-  <symbol id="bolt" viewBox="0 0 24 24"><path d="M13 1 3 14h7l-1 9 11-14h-7l0-8z"/></symbol>
-  <symbol id="syringe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 16 4 4"/><path d="m14 4 6 6"/></g></symbol>
-  <symbol id="pill" viewBox="0 0 24 24"><rect x="2.5" y="9" width="19" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v6" stroke="currentColor" stroke-width="1.8"/></symbol>
-  <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
-  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 20S3.5 14.5 3.5 8.6C3.5 5.8 5.6 4 8 4c1.6 0 2.9 1 4 2.3C13.1 5 14.4 4 16 4c2.4 0 4.5 1.8 4.5 4.6C20.5 14.5 12 20 12 20z" fill="currentColor"/></symbol>
+  <symbol id="bolt" viewBox="0 0 24 24"><path d="M13 1 3 14h7l-1 9 11-14h-7l0-8z" fill="currentColor"/></symbol>
+  <symbol id="flat" viewBox="0 0 48 24"><path d="M2 12h12l4-7 5 14 4-7h19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="vf" viewBox="0 0 48 24"><path d="M2 12h6l3-6 3 12 3-9 3 7 3-10 3 8 3-5 3 3h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="timer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 2h5M12 2v3.5"/></g></symbol>
+  <symbol id="syringe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 16 4 4"/></g></symbol>
+  <symbol id="clip" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 4V2.8h6V4z"/><path d="M8 10h8M8 14h8M8 18h5"/></g></symbol>
+  <symbol id="gauge" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19h16M6 19V9M12 19V5M18 19v-7"/></g></symbol>
+  <symbol id="team" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="7" cy="8" r="2.6"/><circle cx="17" cy="8" r="2.6"/><path d="M2 19c0-2.9 2.2-5 5-5s5 2.1 5 5zM12 19c0-2.9 2.2-5 5-5s5 2.1 5 5z"/></g></symbol>
+  <symbol id="lungs" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v9"/><path d="M9 7c0 3-4 4-5.4 7.2C2.6 16.6 3.3 21 6 21c1.9 0 3-1.2 3-3z"/><path d="M15 7c0 3 4 4 5.4 7.2 1 2.4.3 6.8-2.4 6.8-1.9 0-3-1.2-3-3z"/></g></symbol>
+  <symbol id="wave" viewBox="0 0 24 24"><path d="M1 14h4l2-6 3 11 3-14 2.5 9H23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="cycle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></g></symbol>
+  <symbol id="warn" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 7v6M12 16.4v.1"/></g></symbol>
 </defs></svg>
 
-<div class="sheet">
+<div class="poster">
 
-  <header>
-    <div class="logo" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-9.5-8.5C.8 9.6 2.2 6 5.5 6c2 0 3.2 1.2 3.9 2.3M12 21s7-4.35 9.5-8.5C23.2 9.6 21.8 6 18.5 6c-2 0-3.2 1.2-3.9 2.3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h4l1.5-4 2.5 7 2-9 2 6 1.5 0 3 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div>
-      <div class="htitle">Arrêt cardiaque · ALS adulte</div>
-      <div class="hsub">Algorithme · hors-ligne</div>
-    </div>
-    <div class="badge">ERC 2025</div>
+  <header class="phead">
+    <h1>Algorithme de l'arrêt cardiaque chez l'adulte</h1>
+    <p>(FV/TVsp/Asystolie/AESP)</p>
   </header>
 
-  <div class="layout">
+  <div class="grid">
 
-    <!-- ============ COLONNE ALGORITHME (épurée) ============ -->
-    <div class="algo">
-      <div class="box start"><div class="t"><span class="tagi"><svg class="i-rcp"><use href="#heart"/></svg></span> RCP 30:2</div><div class="mini">O₂ · moniteur / défibrillateur</div></div>
-      <div class="a"></div>
-      <div class="decwrap"><div class="dec">Rythme choquable&nbsp;?</div></div>
-      <svg class="splitarr" viewBox="0 0 320 68" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-        <path d="M160 5 Q118 34 74 60" fill="none" stroke="#7e96bd" stroke-width="2.6" marker-end="url(#ah)"/>
-        <path d="M160 5 Q202 34 246 60" fill="none" stroke="#7e96bd" stroke-width="2.6" marker-end="url(#ah)"/>
-        <text class="lblY" x="92" y="32">Oui</text>
-        <text class="lblN" x="228" y="32">Non</text>
-      </svg>
+    <!-- =================== ORGANIGRAMME =================== -->
+    <section class="flowzone">
+      <div class="flowscroll">
+        <div class="flow">
 
-      <div class="cols">
-        <!-- choquable -->
-        <div class="col c-shock">
-          <div class="chead">⚡ FV / TVsp</div>
-          <div class="shockwrap"><span class="shock"><svg><use href="#bolt"/></svg> CHOC</span></div>
-          <div class="a sm"></div>
-          <div class="box rcp"><div class="t">RCP 2 min</div></div>
-          <div class="decwrap"><div class="dec small">choquable&nbsp;?</div></div>
-          <svg class="subarr" viewBox="0 0 168 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <path d="M62 4 L62 42" fill="none" stroke="#7e96bd" stroke-width="2.4" marker-end="url(#ah)"/>
-            <text class="lblY" x="32" y="28">Oui</text>
-            <path d="M92 6 Q142 12 158 34" fill="none" stroke="#7e96bd" stroke-width="2.2" marker-end="url(#ah)"/>
-            <text class="lblN" x="96" y="18">Non ⑧</text>
-          </svg>
-          <div class="shockwrap"><span class="shock"><svg><use href="#bolt"/></svg> CHOC</span></div>
-          <div class="a sm"></div>
-          <div class="box rcp"><div class="t">RCP 2 min</div><span class="marker adr"><svg><use href="#syringe"/></svg> Adré · 3ᵉ choc</span></div>
-          <div class="decwrap"><div class="dec small">choquable&nbsp;?</div></div>
-          <svg class="subarr" viewBox="0 0 168 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <path d="M62 4 L62 42" fill="none" stroke="#7e96bd" stroke-width="2.4" marker-end="url(#ah)"/>
-            <text class="lblY" x="32" y="28">Oui</text>
-            <path d="M92 6 Q142 12 158 34" fill="none" stroke="#7e96bd" stroke-width="2.2" marker-end="url(#ah)"/>
-            <text class="lblN" x="96" y="18">Non ⑧</text>
-          </svg>
-          <div class="shockwrap"><span class="shock"><svg><use href="#bolt"/></svg> CHOC</span></div>
-          <div class="a sm"></div>
-          <div class="box rcp"><div class="t">RCP 2 min</div><span class="marker amio"><svg><use href="#pill"/></svg> Amiodarone</span></div>
-          <div class="loop">↻ <b>choc → RCP 2 min</b></div>
-        </div>
-        <!-- non choquable -->
-        <div class="col c-ns">
-          <div class="chead">🚫 Asystolie / AESP</div>
-          <div class="box rcp"><div class="t">RCP 2 min</div><span class="marker adr"><svg><use href="#syringe"/></svg> Adré d'emblée</span></div>
-          <div class="decwrap"><div class="dec small">choquable&nbsp;?</div></div>
-          <svg class="subarr" viewBox="0 0 168 50" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <path d="M106 4 L106 42" fill="none" stroke="#7e96bd" stroke-width="2.4" marker-end="url(#ah)"/>
-            <text class="lblN" x="112" y="28">Non</text>
-            <path d="M76 6 Q26 12 10 34" fill="none" stroke="#7e96bd" stroke-width="2.2" marker-end="url(#ah)"/>
-            <text class="lblY" x="14" y="18">Oui ②</text>
-          </svg>
-          <div class="box rcp"><div class="t">RCP 2 min</div></div>
-          <div class="loop">↻ réanalyser<br>toutes les <b>2 min</b></div>
+          <!-- ---------- voie défibrillable ---------- -->
+          <div class="row">
+            <div class="entry red">
+              <svg aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="et">Voie rythme défibrillable</span>
+              <span class="es">(FV/TVsp)</span>
+            </div>
+
+            <div class="link w34"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:132px">
+              <span class="num">1</span>
+              <span class="nt">Commencez<br>la RCR</span>
+              <ul>
+                <li>Administrer de l'oxygène</li>
+                <li>Fixez le moniteur/défibrillateur</li>
+              </ul>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="diamond">
+              <div class="dbody"><span>Rythme<br>défibrillable&nbsp;?</span></div>
+            </div>
+
+            <div class="link w34 oui"><span class="lbl">Oui</span><span class="ln"></span></div>
+
+            <div class="node shock" style="flex-basis:104px">
+              <span class="num r">2</span>
+              <span class="nt">FV/TVsp</span>
+              <svg style="width:52px;height:26px;color:var(--navy);margin:6px 0" aria-hidden="true"><use href="#vf"/></svg>
+              <svg style="width:26px;height:26px;color:var(--red)" aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="nt" style="margin-top:6px">Choc</span>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:128px">
+              <span class="num">3</span>
+              <span class="nt">RCR</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul><li>Accès IV/IO</li></ul>
+            </div>
+
+            <div class="link w34 oui"><span class="lbl">Oui</span><span class="ln"></span></div>
+
+            <div class="node shock" style="flex-basis:96px">
+              <span class="num r">4</span>
+              <span class="nt">Choc</span>
+              <svg style="width:26px;height:26px;color:var(--red);margin-top:8px" aria-hidden="true"><use href="#bolt"/></svg>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:142px">
+              <span class="num">5</span>
+              <span class="nt">RCR</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul>
+                <li>Épinéphrine toutes les 3 à 5 min</li>
+                <li>Envisager un dispositif de libération des voies aériennes et la capnographie</li>
+              </ul>
+            </div>
+
+            <div class="link w34 oui"><span class="lbl">Oui</span><span class="ln"></span></div>
+
+            <div class="node shock" style="flex-basis:96px">
+              <span class="num r">6</span>
+              <span class="nt">Choc</span>
+              <svg style="width:26px;height:26px;color:var(--red);margin-top:8px" aria-hidden="true"><use href="#bolt"/></svg>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:136px">
+              <span class="num">7</span>
+              <span class="nt">RCR</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul>
+                <li>Amiodarone ou lidocaïne</li>
+                <li>Traitez les causes réversibles</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- retour de cycle -->
+          <div class="rail" aria-hidden="true">
+            <span class="track"></span>
+            <span class="up" style="left:2px"></span>
+            <span class="rlbl">Rythme non défibrillable → poursuivez les cycles de RCR de 2 min</span>
+          </div>
+
+          <!-- ---------- voie non défibrillable ---------- -->
+          <div class="row">
+            <div class="entry navy">
+              <svg aria-hidden="true"><use href="#flat"/></svg>
+              <span class="et">Voie rythme non défibrillable</span>
+              <span class="es">(Asystolie/AESP)</span>
+            </div>
+
+            <div class="link w34"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:118px;justify-content:center">
+              <span class="num">A</span>
+              <span class="nt">Asystolie<br>AESP</span>
+              <svg style="width:52px;height:24px;color:var(--navy);margin-top:8px" aria-hidden="true"><use href="#flat"/></svg>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:142px">
+              <span class="num">B</span>
+              <span class="nt">RCR</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul>
+                <li>Accès IV/IO</li>
+                <li>Épinéphrine toutes les 3 à 5 min</li>
+                <li>Envisager un dispositif de libération des voies aériennes et la capnographie</li>
+              </ul>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="diamond">
+              <div class="dbody"><span>Rythme<br>défibrillable&nbsp;?</span></div>
+            </div>
+
+            <div class="branch">
+              <span style="color:var(--red)">Oui</span> → <span style="white-space:nowrap">encadré 2</span><br>
+              <span>Non</span> ↓
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:142px">
+              <span class="num">C</span>
+              <span class="nt">RCR</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul><li>Traitez les causes réversibles</li></ul>
+            </div>
+          </div>
+
+          <div class="epi">
+            <svg aria-hidden="true"><use href="#syringe"/></svg>
+            Épinéphrine dans les plus brefs délais
+          </div>
+
         </div>
       </div>
 
-      <div class="a"></div>
-      <div class="decwrap"><div class="dec">Signes de RACS&nbsp;?</div></div>
-      <div class="a sm"></div>
-      <div class="box neutral"><div class="t">Soins post-arrêt</div><div class="mini">sinon → poursuivre le cycle</div></div>
+      <div class="repeat">
+        <div class="rb">
+          <svg aria-hidden="true"><use href="#cycle"/></svg>
+          <div>
+            <b>Répétez les cycles de 2 minutes de RCR et réévaluez le rythme après chaque cycle.</b>
+            <span>Traitez toujours les causes réversibles, optimisez la qualité des compressions et la réanimation globale.</span>
+          </div>
+        </div>
+        <div class="goto"><i>»</i> Passez à 5 ou à 7</div>
+      </div>
+    </section>
+
+    <!-- =================== COLONNE DROITE =================== -->
+    <aside class="side">
+
+      <div class="panel navy">
+        <h2>Qualité de la RCR</h2>
+        <div class="body">
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#clip"/></svg>
+            <span>Poussez fort (≥ 5 cm en profondeur) et vite (100 à 120/min) et laissez la poitrine remonter complètement.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#gauge"/></svg>
+            <span>Minimisez les interruptions pendant les compressions.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#team"/></svg>
+            <span>Changez le positionneur toutes les 2 minutes, ou plus souvent si fatigue.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#lungs"/></svg>
+            <span>Sans un dispositif de libération des voies aériennes : rapport compressions/ventilations de 30:2.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#wave"/></svg>
+            <span>Capnographie quantitative : si PetCO₂ est fiable ou en baisse, réévaluez la qualité de la RCR.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel red">
+        <h2>Énergie de choc / défibrillation</h2>
+        <div class="body">
+          <ul>
+            <li><b>Biphasique :</b> recommandation de fabricant, p. ex. dose initiale de 120 à 200 J et, en l'absence de recommandation, administration de la dose maximale.</li>
+            <li>Si dose inconnue, choisissez entre les doses subséquentes une dose d'énergie équivalente, et des doses plus élevées pour les suivants.</li>
+            <li><b>Monophasique :</b> 360 J</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel orange">
+        <h2>Pharmacothérapie</h2>
+        <div class="body">
+          <ul>
+            <li><b>Dose IV/IO d'épinéphrine :</b> 1 mg toutes les 3 à 5 min</li>
+            <li><b>Dose IV/IO d'amiodarone :</b>
+              <ul class="sub">
+                <li>Dose initiale — bolus de 300 mg</li>
+                <li>Dose suivante — 150 mg</li>
+              </ul>
+            </li>
+            <li><b>Dose IV/IO de lidocaïne :</b>
+              <ul class="sub">
+                <li>Dose initiale — 1 à 1,5 mg/kg</li>
+                <li>Dose suivante — 0,5 à 0,75 mg/kg</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- =================== BANDEAU BAS =================== -->
+  <div class="bottom">
+
+    <div class="panel navy">
+      <h2>Méthode de protection / voie aérienne avancée</h2>
+      <div class="body">
+        <ul>
+          <li>Intubation orotrachéale ou dispositif de libération des voies aériennes</li>
+          <li>Capnographie quantitative ou capnographie pour confirmer et surveiller le positionnement endotrachéal</li>
+          <li>Dès que la résistance ventilatoire est en place, administrez 1 ventilation toutes les 6 secondes (10 ventilations/min) sans pauses des compressions thoraciques</li>
+        </ul>
+      </div>
     </div>
 
-    <!-- ============ COLONNE POSOLOGIES / REPÈRES ============ -->
-    <div class="side">
-      <div class="panel p-dose">
-        <div class="ph"><span class="tagi"><svg class="i-med"><use href="#syringe"/></svg></span> POSOLOGIES · IV / IO</div>
+    <div class="panel navy">
+      <h2>Retour à la circulation spontanée (RCS)</h2>
+      <div class="body">
         <ul>
-          <li><b>Adrénaline 1 mg</b> — toutes les 3–5 min<br><span style="color:var(--muted)">choquable : après 3ᵉ choc · non choquable : d'emblée</span></li>
-          <li><b>Amiodarone 300 mg</b> après 3 chocs, puis <b>150 mg</b> après 5 chocs</li>
-          <li>Alternative : Lidocaïne <b>100 mg</b> puis <b>50 mg</b></li>
+          <li>Pouls et tension artérielle</li>
+          <li>Augmentation adaptée et soutenue de la PetCO₂, habituellement ≥ 40 mm Hg</li>
+          <li>Ondes spontanées de tension artérielle avec surveillance intra-artérielle</li>
         </ul>
       </div>
-      <div class="panel p-energy">
-        <div class="ph"><span class="tagi"><svg class="i-shock"><use href="#bolt"/></svg></span> ÉNERGIE DE CHOC</div>
+    </div>
+
+    <div class="panel">
+      <div class="body">
+        <div class="hicon" style="margin-bottom:9px">
+          <svg aria-hidden="true"><use href="#clip"/></svg>
+          <b style="font-size:12px;color:var(--navy);text-transform:uppercase;line-height:1.2">S'il n'y a pas de signes de retour à la circulation spontanée (RCS)</b>
+        </div>
         <ul>
-          <li>Biphasique <b>≥ 150 J</b> (pulsé <b>130–150 J</b>)</li>
-          <li>Identique ou <b>croissante</b> · pause péri-choc <b>&lt; 5 s</b></li>
+          <li>Passez à 10 ou à 11</li>
+          <li>En cas de RCS, passer aux soins post-arrêt cardiaque</li>
+          <li>Déterminez s'il convient de poursuivre la réanimation</li>
         </ul>
+        <div class="warn">
+          <svg aria-hidden="true"><use href="#warn"/></svg>
+          <span>En l'absence de conditions persistantes incompatibles avec la vie, ne pas arrêter la réanimation trop tôt.</span>
+        </div>
       </div>
-      <div class="panel p-cpr">
-        <div class="ph"><span class="tagi"><svg class="i-rcp"><use href="#heart"/></svg></span> PENDANT LA RCP</div>
-        <ul>
-          <li><b>100–120</b>/min · <b>5–6 cm</b> · relâchement complet</li>
-          <li>Abord <b>IV / IO</b> · voie aérienne + <b>capnographie</b></li>
-          <li>Intubé : compressions <b>continues</b>, ~10 vent./min</li>
-        </ul>
-      </div>
-      <div class="panel p-cause">
-        <div class="ph"><span class="tagi"><svg class="i-cause"><use href="#search"/></svg></span> CAUSES RÉVERSIBLES</div>
-        <ul>
-          <li><span class="hh">4H</span> Hypoxie · Hypovolémie · Hypo/hyperK⁺ · Hypo/hyperthermie</li>
-          <li><span class="hh">4T</span> Thrombose (coro/EP) · pneumoThorax · Tamponnade · Toxiques</li>
-        </ul>
-      </div>
-      <div class="panel p-rosc">
-        <div class="ph"><span class="tagi"><svg class="i-ok"><use href="#heart"/></svg></span> POST-ARRÊT (RACS)</div>
-        <ul>
-          <li>ABCDE · SpO₂ <b>94–98 %</b> · normocapnie</li>
-          <li><b>ECG 12 dér.</b> → coronarographie si STEMI</li>
-          <li>Éviter la fièvre · glycémie contrôlée</li>
-        </ul>
+    </div>
+
+    <div class="panel orange">
+      <h2>Causes réversibles</h2>
+      <div class="body">
+        <div class="causes">
+          <div><span class="tag h">H</span> Hypovolémie</div>
+          <div><span class="tag t">T</span> Tamponnade cardiaque</div>
+          <div><span class="tag h">H</span> Hypoxie</div>
+          <div><span class="tag t">T</span> Tension des pneumothorax</div>
+          <div><span class="tag h">H</span> Hydrogène (acidose)</div>
+          <div><span class="tag t">T</span> Thrombose coronaire</div>
+          <div><span class="tag h">H</span> Hypo/Hyperkaliémie</div>
+          <div><span class="tag t">T</span> Thrombose pulmonaire</div>
+          <div><span class="tag h">H</span> Hypothermie</div>
+          <div><span class="tag t">T</span> Toxines</div>
+        </div>
       </div>
     </div>
 
   </div>
 
   <footer>
-    D'après <a href="https://www.cprguidelines.eu/" target="_blank" rel="noopener">ERC Guidelines 2025</a> (reco officielle, relayée en France par CFRC/SFMU) · design et texte originaux · usage non commercial ·
-    <b>aide-mémoire — ne remplace pas le jugement clinique · pas un dispositif médical</b>
+    <span>© 2024 — Utilisation à des fins éducatives et cliniques.</span>
+    <span>Inspiré des lignes directrices de l'American Heart Association.</span>
+    <span class="disc">Aide-mémoire — ne remplace pas le jugement clinique · pas un dispositif médical.</span>
   </footer>
 
 </div>
