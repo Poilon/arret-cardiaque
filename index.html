@@ -22,31 +22,40 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{color-scheme:light}
-  html,body{margin:0;background:var(--paper)}
+  /* L'affiche est composée à taille fixe puis mise à l'échelle du viewport
+     par fitPoster() : rien ne défile, ni horizontalement ni verticalement.
+     Corollaire : plus aucune media query, la mise en page ne doit pas
+     dépendre de la largeur de l'écran mais de celle de l'affiche. */
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper)}
   body{
     color:var(--ink);-webkit-text-size-adjust:100%;
     font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    padding:calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
   }
-  .poster{max-width:1480px;margin:0 auto}
+  /* centrage flex et non grid : avec place-items, l'élément est centré dans sa
+     piste, mais la piste — plus large que le conteneur — reste calée au début,
+     donc l'affiche débordait vers le bas une fois mise à l'échelle. */
+  .stage{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    padding:calc(6px + env(safe-area-inset-top)) 6px calc(6px + env(safe-area-inset-bottom));
+  }
+  .poster{flex:0 0 auto}
+  .poster{width:1640px;transform-origin:center center}
 
   /* ---------------- title ---------------- */
   .phead{margin-bottom:14px}
   .phead h1{
-    margin:0;font-size:clamp(19px,3.1vw,33px);line-height:1.08;
+    margin:0;font-size:33px;line-height:1.08;
     font-weight:800;letter-spacing:-.01em;color:var(--navy);text-transform:uppercase;
   }
-  .phead p{margin:2px 0 0;font-size:clamp(14px,2vw,21px);font-weight:700;color:var(--teal)}
+  .phead p{margin:2px 0 0;font-size:21px;font-weight:700;color:var(--teal)}
 
   /* ---------------- overall grid ---------------- */
-  .grid{display:grid;grid-template-columns:1fr;gap:14px}
-  @media(min-width:1080px){ .grid{grid-template-columns:minmax(0,2.62fr) minmax(255px,1fr)} }
+  .grid{display:grid;grid-template-columns:1330px 1fr;gap:14px}
 
   /* ---------------- flow ---------------- */
-  /* overflow-x:auto force overflow-y à auto : sans marge haute, les pastilles
-     numérotées (top:-11px) seraient rognées par le conteneur de défilement. */
-  .flowscroll{overflow-x:auto;padding:16px 2px 6px}
-  .flow{min-width:920px}
+  .flowscroll{padding:16px 2px 6px}
+  .flow{width:1324px}
   .row{display:flex;align-items:stretch;gap:0}
   .row + .row{margin-top:16px}
 
@@ -144,8 +153,7 @@
   .epi svg{width:17px;height:17px;flex:0 0 auto}
 
   /* repeat bar */
-  .repeat{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
-  @media(min-width:640px){ .repeat{grid-template-columns:1fr auto} }
+  .repeat{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}
   .repeat .rb{
     border:1.6px solid var(--navy);border-radius:9px;padding:10px 14px;
     display:flex;align-items:center;gap:11px;
@@ -187,9 +195,7 @@
   .iconrow svg{width:22px;height:22px;flex:0 0 auto;color:var(--navy);margin-top:1px}
 
   /* ---------------- bottom panels ---------------- */
-  .bottom{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
-  @media(min-width:700px){ .bottom{grid-template-columns:1fr 1fr} }
-  @media(min-width:1080px){ .bottom{grid-template-columns:repeat(4,1fr)} }
+  .bottom{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
 
   .causes{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
   .causes div{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:11.5px}
@@ -230,7 +236,8 @@
   <symbol id="warn" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 7v6M12 16.4v.1"/></g></symbol>
 </defs></svg>
 
-<div class="poster">
+<div class="stage">
+<div class="poster" id="poster">
 
   <header class="phead">
     <h1>Algorithme de l'arrêt cardiaque chez l'adulte</h1>
@@ -545,8 +552,34 @@
   </footer>
 
 </div>
+</div>
 
 <script>
+// L'affiche est composée à 1640 px de large ; on la réduit pour qu'elle tienne
+// entièrement dans le viewport, en hauteur comme en largeur. La hauteur est
+// mesurée plutôt que codée en dur : elle dépend du rendu des polices.
+(function(){
+  var poster = document.getElementById("poster");
+  function fitPoster(){
+    poster.style.transform = "none";
+    var w = poster.offsetWidth, h = poster.offsetHeight;
+    if(!w || !h) return;
+    var vw = document.documentElement.clientWidth  - 12;
+    var vh = document.documentElement.clientHeight - 12;
+    poster.style.transform = "scale(" + Math.min(vw / w, vh / h) + ")";
+  }
+  fitPoster();
+  addEventListener("resize", fitPoster);
+  addEventListener("orientationchange", fitPoster);
+  addEventListener("load", fitPoster);
+  // les métriques changent une fois les polices résolues
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitPoster);
+  // filet de sécurité : toute variation de hauteur du contenu (polices tardives,
+  // rendu progressif) relance le calcul. Le transform n'affecte pas la boîte
+  // observée, donc pas de boucle.
+  if(window.ResizeObserver) new ResizeObserver(fitPoster).observe(poster);
+})();
+
 if("serviceWorker" in navigator){
   window.addEventListener("load",function(){
     // updateViaCache:"none" => le fichier sw.js n'est jamais servi depuis le cache HTTP,
