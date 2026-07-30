@@ -122,7 +122,7 @@
 
   /* boucle de retour : ancrée sous l'encadré 7 (droite) et remontant dans
      l'encadré 3 (gauche). Les marges suivent la largeur cumulée des encadrés. */
-  .rail{position:relative;height:32px;margin:2px 68px 0 670px}
+  .rail{position:relative;height:26px;margin:2px 68px 20px 670px}
   .rail .track{
     position:absolute;left:0;right:0;top:15px;height:0;
     border-top:2px dashed var(--navy);
@@ -133,10 +133,6 @@
   .rail .up.l::before{
     content:"";position:absolute;top:-7px;left:-5px;
     border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid var(--navy);
-  }
-  .rail .rlbl{
-    position:absolute;top:18px;left:50%;transform:translateX(-50%);white-space:nowrap;
-    background:var(--paper);padding:0 10px;font-size:10.5px;font-weight:700;color:var(--navy);
   }
 
   /* epinephrine callout */
@@ -341,7 +337,6 @@
             <span class="track"></span>
             <span class="up l"></span>
             <span class="up r"></span>
-            <span class="rlbl">Non défibrillable → poursuivez les cycles de 2 min</span>
           </div>
 
           <!-- ---------- voie non défibrillable ---------- -->
@@ -495,7 +490,7 @@
     </div>
 
     <div class="panel navy">
-      <h2>Retour à la circulation spontanée (RCS)</h2>
+      <h2>Retour à une circulation spontanée (RACS)</h2>
       <div class="body">
         <ul>
           <li>Pouls et tension artérielle</li>
@@ -509,11 +504,11 @@
       <div class="body">
         <div class="hicon" style="margin-bottom:9px">
           <svg aria-hidden="true"><use href="#clip"/></svg>
-          <b style="font-size:12px;color:var(--navy);text-transform:uppercase;line-height:1.2">S'il n'y a pas de signes de retour à la circulation spontanée (RCS)</b>
+          <b style="font-size:12px;color:var(--navy);text-transform:uppercase;line-height:1.2">S'il n'y a pas de signes de retour à une circulation spontanée (RACS)</b>
         </div>
         <ul>
           <li>Passez à 10 ou à 11</li>
-          <li>En cas de RCS, passer aux soins post-arrêt cardiaque</li>
+          <li>En cas de RACS, passer aux soins post-arrêt cardiaque</li>
           <li>Déterminez s'il convient de poursuivre la réanimation</li>
         </ul>
         <div class="warn">
