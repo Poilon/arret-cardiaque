@@ -120,25 +120,28 @@
     padding:0 8px;text-align:center;line-height:1.2;
   }
 
-  /* return rail */
-  .rail{position:relative;height:34px;margin:0 0 0 150px}
+  /* boucle de retour : ancrée sous l'encadré 7 (droite) et remontant dans
+     l'encadré 3 (gauche). Les marges suivent la largeur cumulée des encadrés. */
+  .rail{position:relative;height:32px;margin:2px 68px 0 670px}
   .rail .track{
-    position:absolute;left:0;right:6%;top:16px;height:0;
+    position:absolute;left:0;right:0;top:15px;height:0;
     border-top:2px dashed var(--navy);
   }
-  .rail .up{position:absolute;top:0;height:18px;width:0;border-left:2px dashed var(--navy)}
-  .rail .up::before{
+  .rail .up{position:absolute;top:0;height:16px;width:0;border-left:2px dashed var(--navy)}
+  .rail .up.l{left:0}
+  .rail .up.r{right:0}
+  .rail .up.l::before{
     content:"";position:absolute;top:-7px;left:-5px;
     border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid var(--navy);
   }
   .rail .rlbl{
-    position:absolute;top:19px;left:50%;transform:translateX(-50%);
-    background:var(--paper);padding:0 8px;font-size:10.5px;font-weight:700;color:var(--navy);
+    position:absolute;top:18px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    background:var(--paper);padding:0 10px;font-size:10.5px;font-weight:700;color:var(--navy);
   }
 
   /* epinephrine callout */
   .epi{
-    margin:10px 0 0 150px;display:inline-flex;align-items:center;gap:8px;
+    margin:10px 0 0 296px;display:inline-flex;align-items:center;gap:8px;
     border:1.6px dashed var(--red);border-radius:9px;padding:7px 12px;
     color:var(--red);font-size:11.5px;font-weight:800;line-height:1.2;
   }
@@ -249,7 +252,7 @@
           <div class="row">
             <div class="entry red">
               <svg aria-hidden="true"><use href="#bolt"/></svg>
-              <span class="et">Voie rythme défibrillable</span>
+              <span class="et">Rythmes défibrillables</span>
               <span class="es">(FV/TVsp)</span>
             </div>
 
@@ -307,7 +310,7 @@
               <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
               <ul>
                 <li>Épinéphrine toutes les 3 à 5 min</li>
-                <li>Envisager un dispositif de libération des voies aériennes et la capnographie</li>
+                <li>Envisager une voie aérienne avancée et la capnographie</li>
               </ul>
             </div>
 
@@ -336,15 +339,16 @@
           <!-- retour de cycle -->
           <div class="rail" aria-hidden="true">
             <span class="track"></span>
-            <span class="up" style="left:2px"></span>
-            <span class="rlbl">Rythme non défibrillable → poursuivez les cycles de RCR de 2 min</span>
+            <span class="up l"></span>
+            <span class="up r"></span>
+            <span class="rlbl">Non défibrillable → poursuivez les cycles de 2 min</span>
           </div>
 
           <!-- ---------- voie non défibrillable ---------- -->
           <div class="row">
             <div class="entry navy">
               <svg aria-hidden="true"><use href="#flat"/></svg>
-              <span class="et">Voie rythme non défibrillable</span>
+              <span class="et">Rythmes non défibrillables</span>
               <span class="es">(Asystolie/AESP)</span>
             </div>
 
@@ -366,7 +370,7 @@
               <ul>
                 <li>Accès IV/IO</li>
                 <li>Épinéphrine toutes les 3 à 5 min</li>
-                <li>Envisager un dispositif de libération des voies aériennes et la capnographie</li>
+                <li>Envisager une voie aérienne avancée et la capnographie</li>
               </ul>
             </div>
 
@@ -420,23 +424,23 @@
         <div class="body">
           <div class="iconrow">
             <svg aria-hidden="true"><use href="#clip"/></svg>
-            <span>Poussez fort (≥ 5 cm en profondeur) et vite (100 à 120/min) et laissez la poitrine remonter complètement.</span>
+            <span>Comprimez fort (≥ 5 cm) et vite (100 à 120/min), en laissant le thorax remonter complètement.</span>
           </div>
           <div class="iconrow">
             <svg aria-hidden="true"><use href="#gauge"/></svg>
-            <span>Minimisez les interruptions pendant les compressions.</span>
+            <span>Limitez au maximum les interruptions des compressions.</span>
           </div>
           <div class="iconrow">
             <svg aria-hidden="true"><use href="#team"/></svg>
-            <span>Changez le positionneur toutes les 2 minutes, ou plus souvent si fatigue.</span>
+            <span>Relayez le masseur toutes les 2 minutes, ou plus tôt en cas de fatigue.</span>
           </div>
           <div class="iconrow">
             <svg aria-hidden="true"><use href="#lungs"/></svg>
-            <span>Sans un dispositif de libération des voies aériennes : rapport compressions/ventilations de 30:2.</span>
+            <span>Sans voie aérienne avancée : rapport compressions/ventilations de 30:2.</span>
           </div>
           <div class="iconrow">
             <svg aria-hidden="true"><use href="#wave"/></svg>
-            <span>Capnographie quantitative : si PetCO₂ est fiable ou en baisse, réévaluez la qualité de la RCR.</span>
+            <span>Capnographie quantitative : si la PetCO₂ est basse ou en baisse, réévaluez la qualité de la RCR.</span>
           </div>
         </div>
       </div>
@@ -445,8 +449,8 @@
         <h2>Énergie de choc / défibrillation</h2>
         <div class="body">
           <ul>
-            <li><b>Biphasique :</b> recommandation de fabricant, p. ex. dose initiale de 120 à 200 J et, en l'absence de recommandation, administration de la dose maximale.</li>
-            <li>Si dose inconnue, choisissez entre les doses subséquentes une dose d'énergie équivalente, et des doses plus élevées pour les suivants.</li>
+            <li><b>Biphasique :</b> suivre les recommandations du fabricant (p. ex. 120 à 200 J en dose initiale) ; à défaut, administrer la dose maximale.</li>
+            <li>Si la dose recommandée est inconnue, délivrer les chocs suivants à énergie équivalente, voire supérieure.</li>
             <li><b>Monophasique :</b> 360 J</li>
           </ul>
         </div>
@@ -480,12 +484,12 @@
   <div class="bottom">
 
     <div class="panel navy">
-      <h2>Méthode de protection / voie aérienne avancée</h2>
+      <h2>Protection des voies aériennes</h2>
       <div class="body">
         <ul>
-          <li>Intubation orotrachéale ou dispositif de libération des voies aériennes</li>
-          <li>Capnographie quantitative ou capnographie pour confirmer et surveiller le positionnement endotrachéal</li>
-          <li>Dès que la résistance ventilatoire est en place, administrez 1 ventilation toutes les 6 secondes (10 ventilations/min) sans pauses des compressions thoraciques</li>
+          <li>Intubation orotrachéale ou dispositif supraglottique</li>
+          <li>Capnographie quantitative pour confirmer et surveiller la position de la sonde</li>
+          <li>Une fois le dispositif en place : 1 ventilation toutes les 6 secondes (10/min), sans interrompre les compressions</li>
         </ul>
       </div>
     </div>
@@ -495,8 +499,8 @@
       <div class="body">
         <ul>
           <li>Pouls et tension artérielle</li>
-          <li>Augmentation adaptée et soutenue de la PetCO₂, habituellement ≥ 40 mm Hg</li>
-          <li>Ondes spontanées de tension artérielle avec surveillance intra-artérielle</li>
+          <li>Augmentation brusque et soutenue de la PetCO₂, habituellement ≥ 40 mmHg</li>
+          <li>Ondes de pression artérielle spontanées au monitorage invasif</li>
         </ul>
       </div>
     </div>
@@ -526,13 +530,13 @@
           <div><span class="tag h">H</span> Hypovolémie</div>
           <div><span class="tag t">T</span> Tamponnade cardiaque</div>
           <div><span class="tag h">H</span> Hypoxie</div>
-          <div><span class="tag t">T</span> Tension des pneumothorax</div>
-          <div><span class="tag h">H</span> Hydrogène (acidose)</div>
+          <div><span class="tag t">T</span> Pneumothorax sous tension</div>
+          <div><span class="tag h">H</span> Ions H⁺ (acidose)</div>
           <div><span class="tag t">T</span> Thrombose coronaire</div>
           <div><span class="tag h">H</span> Hypo/Hyperkaliémie</div>
           <div><span class="tag t">T</span> Thrombose pulmonaire</div>
           <div><span class="tag h">H</span> Hypothermie</div>
-          <div><span class="tag t">T</span> Toxines</div>
+          <div><span class="tag t">T</span> Toxiques</div>
         </div>
       </div>
     </div>
