@@ -4,30 +4,563 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="robots" content="noindex">
-<meta name="description" content="Arrêt cardiaque — site en cours d'amélioration.">
-<title>Arrêt cardiaque — en cours d'amélioration</title>
+<meta name="description" content="Algorithme de l'arrêt cardiaque chez l'adulte (FV/TVsp/Asystolie/AESP) — organigramme complet, qualité de la RCP, énergies de choc, pharmacothérapie et causes réversibles. Hors-ligne, pour médecins et internes.">
+<title>Algorithme de l'arrêt cardiaque chez l'adulte</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <style>
-  *{box-sizing:border-box;margin:0}
+  :root{
+    --navy:#0d3c54;
+    --navy-2:#14506e;
+    --teal:#17879b;
+    --red:#e23c22;
+    --orange:#f2921c;
+    --ink:#12303f;
+    --hair:#c9d4dc;
+    --paper:#ffffff;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{color-scheme:light}
+  html,body{margin:0;background:var(--paper)}
   body{
-    min-height:100dvh;background:#fff;color:#0d3c54;
+    color:var(--ink);-webkit-text-size-adjust:100%;
     font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    display:grid;place-items:center;
-    padding:calc(28px + env(safe-area-inset-top)) 22px calc(28px + env(safe-area-inset-bottom));
-    text-align:center;
+    padding:calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
   }
-  p{
-    font-size:clamp(28px,7vw,64px);line-height:1.15;
-    font-weight:800;letter-spacing:-.015em;max-width:16ch;
+  .poster{max-width:1480px;margin:0 auto}
+
+  /* ---------------- title ---------------- */
+  .phead{margin-bottom:14px}
+  .phead h1{
+    margin:0;font-size:clamp(19px,3.1vw,33px);line-height:1.08;
+    font-weight:800;letter-spacing:-.01em;color:var(--navy);text-transform:uppercase;
   }
-  .heart{color:#e23c22}
+  .phead p{margin:2px 0 0;font-size:clamp(14px,2vw,21px);font-weight:700;color:var(--teal)}
+
+  /* ---------------- overall grid ---------------- */
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:1080px){ .grid{grid-template-columns:minmax(0,2.62fr) minmax(255px,1fr)} }
+
+  /* ---------------- flow ---------------- */
+  /* overflow-x:auto force overflow-y à auto : sans marge haute, les pastilles
+     numérotées (top:-11px) seraient rognées par le conteneur de défilement. */
+  .flowscroll{overflow-x:auto;padding:16px 2px 6px}
+  .flow{min-width:920px}
+  .row{display:flex;align-items:stretch;gap:0}
+  .row + .row{margin-top:16px}
+
+  .node{
+    background:var(--paper);border:1.6px solid var(--navy);border-radius:9px;
+    padding:9px 9px 10px;position:relative;flex:0 0 auto;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .node .nt{font-weight:800;font-size:12.5px;line-height:1.13;text-align:center;color:var(--navy);text-transform:uppercase}
+  .node .ns{font-weight:800;font-size:11px;color:var(--navy);text-transform:uppercase;margin-top:1px}
+  .node ul{margin:7px 0 0;padding:0;list-style:none;font-size:10.5px;line-height:1.32;color:var(--ink);align-self:stretch}
+  .node li{position:relative;padding-left:8px;margin-top:4px}
+  .node li:first-child{margin-top:0}
+  .node li::before{content:"•";position:absolute;left:0;top:-1px;color:var(--ink)}
+
+  .node.shock{border-color:var(--red)}
+  .node.shock .nt{color:var(--red)}
+  .num{
+    position:absolute;top:-11px;left:-11px;width:22px;height:22px;border-radius:50%;
+    background:var(--navy);color:#fff;font-size:12px;font-weight:800;
+    display:grid;place-items:center;line-height:1;
+  }
+  .num.r{background:var(--red)}
+
+  /* entry blocks */
+  .entry{
+    flex:0 0 118px;border-radius:9px;color:#fff;padding:12px 10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;
+    align-self:center;
+  }
+  .entry.red{background:var(--red)}
+  .entry.navy{background:var(--navy)}
+  .entry .et{font-size:11.5px;font-weight:800;line-height:1.16;text-transform:uppercase}
+  .entry .es{font-size:10.5px;font-weight:700;opacity:.95}
+  .entry svg{width:30px;height:30px}
+
+  /* diamond */
+  .diamond{
+    flex:0 0 132px;align-self:center;position:relative;
+    display:grid;place-items:center;text-align:center;
+  }
+  .diamond .dbody{
+    width:132px;height:104px;background:var(--red);
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    display:grid;place-items:center;padding:0 16px;
+  }
+  .diamond span{color:#fff;font-size:10.5px;font-weight:800;line-height:1.15;text-transform:uppercase}
+
+  /* connectors */
+  .link{flex:0 0 auto;align-self:center;display:flex;align-items:center;position:relative}
+  .link .ln{height:2px;background:var(--navy);width:100%}
+  .link::after{
+    content:"";width:0;height:0;flex:0 0 auto;
+    border-top:5px solid transparent;border-bottom:5px solid transparent;
+    border-left:8px solid var(--navy);
+  }
+  .link.w26{width:26px}
+  .link.w34{width:34px}
+  .link.w46{width:46px}
+  .link .ln{flex:1 1 auto}
+  .link .lbl{
+    position:absolute;top:-17px;left:50%;transform:translateX(-50%);
+    font-size:11px;font-weight:800;color:var(--red);letter-spacing:.02em;
+  }
+  .link.oui .ln,.link.oui::after{border-left-color:var(--red)}
+  .link.oui .ln{background:var(--red)}
+
+  /* branch note under diamond */
+  .branch{
+    flex:0 0 auto;align-self:center;font-size:11px;font-weight:800;color:var(--navy);
+    padding:0 8px;text-align:center;line-height:1.2;
+  }
+
+  /* boucle de retour : ancrée sous l'encadré 7 (droite) et remontant dans
+     l'encadré 3 (gauche). Les marges suivent la largeur cumulée des encadrés. */
+  .rail{position:relative;height:26px;margin:2px 68px 20px 670px}
+  .rail .track{
+    position:absolute;left:0;right:0;top:15px;height:0;
+    border-top:2px dashed var(--navy);
+  }
+  .rail .up{position:absolute;top:0;height:16px;width:0;border-left:2px dashed var(--navy)}
+  .rail .up.l{left:0}
+  .rail .up.r{right:0}
+  .rail .up.l::before{
+    content:"";position:absolute;top:-7px;left:-5px;
+    border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid var(--navy);
+  }
+
+  /* epinephrine callout */
+  .epi{
+    margin:10px 0 0 296px;display:inline-flex;align-items:center;gap:8px;
+    border:1.6px dashed var(--red);border-radius:9px;padding:7px 12px;
+    color:var(--red);font-size:11.5px;font-weight:800;line-height:1.2;
+  }
+  .epi svg{width:17px;height:17px;flex:0 0 auto}
+
+  /* repeat bar */
+  .repeat{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+  @media(min-width:640px){ .repeat{grid-template-columns:1fr auto} }
+  .repeat .rb{
+    border:1.6px solid var(--navy);border-radius:9px;padding:10px 14px;
+    display:flex;align-items:center;gap:11px;
+  }
+  .repeat .rb svg{width:24px;height:24px;flex:0 0 auto;color:var(--teal)}
+  .repeat .rb b{display:block;font-size:12px;color:var(--teal);text-transform:uppercase;line-height:1.2}
+  .repeat .rb span{font-size:11.5px;color:var(--navy)}
+  .repeat .goto{
+    border:1.6px solid var(--navy);border-radius:9px;padding:10px 18px;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    font-size:12.5px;font-weight:800;color:var(--navy);text-transform:uppercase;white-space:nowrap;
+  }
+  .repeat .goto i{font-style:normal;color:var(--teal);font-size:16px;letter-spacing:-2px}
+
+  /* ---------------- panels ---------------- */
+  .side{display:flex;flex-direction:column;gap:12px}
+  .panel{border:1.5px solid var(--hair);border-radius:9px;overflow:hidden;background:var(--paper)}
+  .panel > h2{
+    margin:0;padding:7px 12px;font-size:12.5px;font-weight:800;
+    color:#fff;text-transform:uppercase;letter-spacing:.01em;line-height:1.2;
+  }
+  .panel.navy{border-color:var(--navy)}   .panel.navy > h2{background:var(--navy)}
+  .panel.teal{border-color:var(--teal)}   .panel.teal > h2{background:var(--teal)}
+  .panel.red{border-color:var(--red)}     .panel.red > h2{background:var(--red)}
+  .panel.orange{border-color:var(--orange)} .panel.orange > h2{background:var(--orange)}
+  .panel .body{padding:10px 13px 12px;font-size:11.5px;line-height:1.42}
+  .panel ul{margin:0;padding:0;list-style:none}
+  .panel li{position:relative;padding-left:11px;margin-top:7px}
+  .panel li:first-child{margin-top:0}
+  .panel li::before{content:"•";position:absolute;left:0;top:-1px;color:var(--ink)}
+  .panel li b{color:var(--navy)}
+  .panel .sub{list-style:none;margin:2px 0 0;padding:0 0 0 4px;color:#3d5a6b}
+  .panel .sub li{padding-left:9px}
+  .panel .sub li::before{content:"–"}
+
+  /* icon rows (qualité de la RCP) */
+  .iconrow{display:flex;gap:10px;align-items:flex-start;margin-top:9px}
+  .iconrow:first-child{margin-top:0}
+  .iconrow svg{width:22px;height:22px;flex:0 0 auto;color:var(--navy);margin-top:1px}
+
+  /* ---------------- bottom panels ---------------- */
+  .bottom{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+  @media(min-width:700px){ .bottom{grid-template-columns:1fr 1fr} }
+  @media(min-width:1080px){ .bottom{grid-template-columns:repeat(4,1fr)} }
+
+  .causes{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .causes div{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:11.5px}
+  .tag{
+    width:17px;height:17px;border-radius:50%;flex:0 0 auto;
+    display:grid;place-items:center;color:#fff;font-size:10px;font-weight:800;line-height:1;
+  }
+  .tag.h{background:var(--red)} .tag.t{background:var(--red)}
+
+  .warn{display:flex;gap:9px;align-items:flex-start;margin-top:10px;padding-top:10px;border-top:1px solid var(--hair)}
+  .warn svg{width:19px;height:19px;flex:0 0 auto;color:var(--navy);margin-top:1px}
+
+  .hicon{display:flex;align-items:center;gap:8px}
+  .hicon svg{width:18px;height:18px;flex:0 0 auto;color:var(--navy)}
+
+  footer{
+    margin-top:16px;padding-top:10px;border-top:1px solid var(--hair);
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;
+    font-size:10.5px;color:#5b7180;
+  }
+  footer .disc{flex-basis:100%;color:var(--red);font-weight:700}
 </style>
 </head>
 <body>
-  <p>Site en cours d'amélioration <span class="heart">(on peut dormir Sara tkt &lt;3)</span></p>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="bolt" viewBox="0 0 24 24"><path d="M13 1 3 14h7l-1 9 11-14h-7l0-8z" fill="currentColor"/></symbol>
+  <symbol id="flat" viewBox="0 0 48 24"><path d="M2 12h12l4-7 5 14 4-7h19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="vf" viewBox="0 0 48 24"><path d="M2 12h6l3-6 3 12 3-9 3 7 3-10 3 8 3-5 3 3h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="timer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 2h5M12 2v3.5"/></g></symbol>
+  <symbol id="syringe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 16 4 4"/></g></symbol>
+  <symbol id="clip" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 4V2.8h6V4z"/><path d="M8 10h8M8 14h8M8 18h5"/></g></symbol>
+  <symbol id="gauge" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19h16M6 19V9M12 19V5M18 19v-7"/></g></symbol>
+  <symbol id="team" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="7" cy="8" r="2.6"/><circle cx="17" cy="8" r="2.6"/><path d="M2 19c0-2.9 2.2-5 5-5s5 2.1 5 5zM12 19c0-2.9 2.2-5 5-5s5 2.1 5 5z"/></g></symbol>
+  <symbol id="lungs" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v9"/><path d="M9 7c0 3-4 4-5.4 7.2C2.6 16.6 3.3 21 6 21c1.9 0 3-1.2 3-3z"/><path d="M15 7c0 3 4 4 5.4 7.2 1 2.4.3 6.8-2.4 6.8-1.9 0-3-1.2-3-3z"/></g></symbol>
+  <symbol id="wave" viewBox="0 0 24 24"><path d="M1 14h4l2-6 3 11 3-14 2.5 9H23" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="cycle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></g></symbol>
+  <symbol id="warn" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 7v6M12 16.4v.1"/></g></symbol>
+</defs></svg>
+
+<div class="poster">
+
+  <header class="phead">
+    <h1>Algorithme de l'arrêt cardiaque chez l'adulte</h1>
+    <p>(FV/TVsp/Asystolie/AESP)</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- =================== ORGANIGRAMME =================== -->
+    <section class="flowzone">
+      <div class="flowscroll">
+        <div class="flow">
+
+          <!-- ---------- voie défibrillable ---------- -->
+          <div class="row">
+            <div class="entry red">
+              <svg aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="et">Rythmes défibrillables</span>
+              <span class="es">(FV/TVsp)</span>
+            </div>
+
+            <div class="link w34"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:132px">
+              <span class="num">1</span>
+              <span class="nt">Commencez<br>la RCP</span>
+              <ul>
+                <li>Administrer de l'oxygène</li>
+                <li>Posez le moniteur/défibrillateur</li>
+              </ul>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="diamond">
+              <div class="dbody"><span>Rythme<br>défibrillable&nbsp;?</span></div>
+            </div>
+
+            <div class="link w34 oui"><span class="lbl">Oui</span><span class="ln"></span></div>
+
+            <div class="node shock" style="flex-basis:104px">
+              <span class="num r">2</span>
+              <span class="nt" style="text-transform:none">FV/TVsp</span>
+              <svg style="width:52px;height:26px;color:var(--navy);margin:6px 0" aria-hidden="true"><use href="#vf"/></svg>
+              <svg style="width:26px;height:26px;color:var(--red)" aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="nt" style="margin-top:6px">Choc</span>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:128px">
+              <span class="num">3</span>
+              <span class="nt">RCP</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul><li>Voie IV/IO</li></ul>
+            </div>
+
+            <div class="link w34 oui"><span class="lbl">Oui</span><span class="ln"></span></div>
+
+            <div class="node shock" style="flex-basis:96px">
+              <span class="num r">4</span>
+              <span class="nt">Choc</span>
+              <svg style="width:26px;height:26px;color:var(--red);margin-top:8px" aria-hidden="true"><use href="#bolt"/></svg>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:142px">
+              <span class="num">5</span>
+              <span class="nt">RCP</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul>
+                <li>Adrénaline toutes les 3 à 5 min</li>
+                <li>Envisager un dispositif avancé des voies aériennes et la capnographie</li>
+              </ul>
+            </div>
+
+            <div class="link w34 oui"><span class="lbl">Oui</span><span class="ln"></span></div>
+
+            <div class="node shock" style="flex-basis:96px">
+              <span class="num r">6</span>
+              <span class="nt">Choc</span>
+              <svg style="width:26px;height:26px;color:var(--red);margin-top:8px" aria-hidden="true"><use href="#bolt"/></svg>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:136px">
+              <span class="num">7</span>
+              <span class="nt">RCP</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul>
+                <li>Amiodarone ou lidocaïne</li>
+                <li>Traitez les causes réversibles</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- retour de cycle -->
+          <div class="rail" aria-hidden="true">
+            <span class="track"></span>
+            <span class="up l"></span>
+            <span class="up r"></span>
+          </div>
+
+          <!-- ---------- voie non défibrillable ---------- -->
+          <div class="row">
+            <div class="entry navy">
+              <svg aria-hidden="true"><use href="#flat"/></svg>
+              <span class="et">Rythmes non défibrillables</span>
+              <span class="es">(Asystolie/AESP)</span>
+            </div>
+
+            <div class="link w34"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:118px;justify-content:center">
+              <span class="num">A</span>
+              <span class="nt">Asystolie<br>AESP</span>
+              <svg style="width:52px;height:24px;color:var(--navy);margin-top:8px" aria-hidden="true"><use href="#flat"/></svg>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:142px">
+              <span class="num">B</span>
+              <span class="nt">RCP</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul>
+                <li>Voie IV/IO</li>
+                <li>Adrénaline toutes les 3 à 5 min</li>
+                <li>Envisager un dispositif avancé des voies aériennes et la capnographie</li>
+              </ul>
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="diamond">
+              <div class="dbody"><span>Rythme<br>défibrillable&nbsp;?</span></div>
+            </div>
+
+            <div class="branch">
+              <span style="color:var(--red)">Oui</span> → <span style="white-space:nowrap">encadré 2</span><br>
+              <span>Non</span> ↓
+            </div>
+
+            <div class="link w26"><span class="ln"></span></div>
+
+            <div class="node" style="flex-basis:142px">
+              <span class="num">C</span>
+              <span class="nt">RCP</span>
+              <span class="ns">pendant 2 min</span>
+              <svg style="width:24px;height:24px;color:var(--navy);margin:6px 0 2px" aria-hidden="true"><use href="#timer"/></svg>
+              <ul><li>Traitez les causes réversibles</li></ul>
+            </div>
+          </div>
+
+          <div class="epi">
+            <svg aria-hidden="true"><use href="#syringe"/></svg>
+            Adrénaline dès que possible
+          </div>
+
+        </div>
+      </div>
+
+      <div class="repeat">
+        <div class="rb">
+          <svg aria-hidden="true"><use href="#cycle"/></svg>
+          <div>
+            <b>Répétez les cycles de 2 minutes de RCP et réévaluez le rythme après chaque cycle.</b>
+            <span>Traitez toujours les causes réversibles, optimisez la qualité des compressions et la réanimation globale.</span>
+          </div>
+        </div>
+        <div class="goto"><i>»</i> Passez à 5 ou à 7</div>
+      </div>
+    </section>
+
+    <!-- =================== COLONNE DROITE =================== -->
+    <aside class="side">
+
+      <div class="panel navy">
+        <h2>Qualité de la RCP</h2>
+        <div class="body">
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#clip"/></svg>
+            <span>Comprimez fort (≥ 5 cm) et vite (100 à 120/min), en laissant le thorax remonter complètement.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#gauge"/></svg>
+            <span>Limitez au maximum les interruptions des compressions.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#team"/></svg>
+            <span>Relayez le masseur toutes les 2 minutes, ou plus tôt en cas de fatigue.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#lungs"/></svg>
+            <span>Sans dispositif avancé des voies aériennes : rapport compressions/ventilations de 30:2.</span>
+          </div>
+          <div class="iconrow">
+            <svg aria-hidden="true"><use href="#wave"/></svg>
+            <span>Capnographie quantitative : si la PetCO₂ est basse ou en baisse, réévaluez la qualité de la RCP.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel red">
+        <h2>Énergie de choc / défibrillation</h2>
+        <div class="body">
+          <ul>
+            <li><b>Biphasique :</b> suivre les recommandations du fabricant (p. ex. 120 à 200 J en dose initiale) ; à défaut, administrer la dose maximale.</li>
+            <li>Si la dose recommandée est inconnue, délivrer les chocs suivants à énergie équivalente, voire supérieure.</li>
+            <li><b>Monophasique :</b> 360 J</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel orange">
+        <h2>Pharmacothérapie</h2>
+        <div class="body">
+          <ul>
+            <li><b>Dose IV/IO d'adrénaline :</b> 1 mg toutes les 3 à 5 min</li>
+            <li><b>Dose IV/IO d'amiodarone :</b>
+              <ul class="sub">
+                <li>Dose initiale — bolus de 300 mg</li>
+                <li>Dose suivante — 150 mg</li>
+              </ul>
+            </li>
+            <li><b>Dose IV/IO de lidocaïne :</b>
+              <ul class="sub">
+                <li>Dose initiale — 1 à 1,5 mg/kg</li>
+                <li>Dose suivante — 0,5 à 0,75 mg/kg</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- =================== BANDEAU BAS =================== -->
+  <div class="bottom">
+
+    <div class="panel navy">
+      <h2>Protection des voies aériennes</h2>
+      <div class="body">
+        <ul>
+          <li>Intubation orotrachéale ou dispositif supraglottique</li>
+          <li>Capnographie quantitative pour confirmer et surveiller la position de la sonde</li>
+          <li>Une fois le dispositif en place : 1 ventilation toutes les 6 secondes (10/min), sans interrompre les compressions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel navy">
+      <h2>Retour à une circulation spontanée (RACS)</h2>
+      <div class="body">
+        <ul>
+          <li>Pouls et tension artérielle</li>
+          <li>Augmentation brusque et soutenue de la PetCO₂, habituellement ≥ 40 mmHg</li>
+          <li>Ondes de pression artérielle spontanées au monitorage invasif</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="body">
+        <div class="hicon" style="margin-bottom:9px">
+          <svg aria-hidden="true"><use href="#clip"/></svg>
+          <b style="font-size:12px;color:var(--navy);text-transform:uppercase;line-height:1.2">S'il n'y a pas de signes de retour à une circulation spontanée (RACS)</b>
+        </div>
+        <ul>
+          <li>Passez à B ou à C</li>
+          <li>En cas de RACS, passer aux soins post-arrêt cardiaque</li>
+          <li>Déterminez s'il convient de poursuivre la réanimation</li>
+        </ul>
+        <div class="warn">
+          <svg aria-hidden="true"><use href="#warn"/></svg>
+          <span>Sauf condition manifestement incompatible avec la vie, ne pas interrompre la réanimation trop tôt.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel orange">
+      <h2>Causes réversibles</h2>
+      <div class="body">
+        <div class="causes">
+          <div><span class="tag h">H</span> Hypovolémie</div>
+          <div><span class="tag t">T</span> Tamponnade cardiaque</div>
+          <div><span class="tag h">H</span> Hypoxie</div>
+          <div><span class="tag t">T</span> Pneumothorax sous tension</div>
+          <div><span class="tag h">H</span> Ions H⁺ (acidose)</div>
+          <div><span class="tag t">T</span> Thrombose coronaire</div>
+          <div><span class="tag h">H</span> Hypo/Hyperkaliémie</div>
+          <div><span class="tag t">T</span> Embolie pulmonaire</div>
+          <div><span class="tag h">H</span> Hypothermie</div>
+          <div><span class="tag t">T</span> Toxiques</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>© 2024 — Utilisation à des fins éducatives et cliniques.</span>
+    <span>Inspiré des lignes directrices de l'American Heart Association.</span>
+    <span class="disc">Aide-mémoire — ne remplace pas le jugement clinique · pas un dispositif médical.</span>
+  </footer>
+
+</div>
+
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    // updateViaCache:"none" => le fichier sw.js n'est jamais servi depuis le cache HTTP,
+    // le navigateur détecte donc immédiatement une nouvelle version à chaque déploiement.
+    navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(reg){
+      reg.update();
+    }).catch(function(){});
+    // Quand le nouveau SW prend le contrôle, on recharge une fois pour afficher la version fraîche.
+    var reloaded=false;
+    navigator.serviceWorker.addEventListener("controllerchange",function(){
+      if(reloaded) return; reloaded=true; window.location.reload();
+    });
+  });
+}
+</script>
 </body>
 </html>
