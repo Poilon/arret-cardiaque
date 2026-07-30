@@ -1,28 +1,47 @@
-# Arrêt cardiaque — ALS adulte (ERC 2025)
+# Arrêt cardiaque — algorithme adulte
 
-Aide décisionnelle **hors-ligne** pour la réanimation de l'arrêt cardiaque de l'adulte,
-destinée aux **médecins et internes**. Timeline visuelle de l'algorithme + minuteur de
-cycle interactif (compteur de cycles 2 min, chocs, rappels adrénaline/amiodarone).
+Affiche **hors-ligne** de l'algorithme de l'arrêt cardiaque chez l'adulte
+(FV/TVsp/Asystolie/AESP), destinée aux **médecins et internes** : les deux voies
+numérotées, la qualité de la RCP, les énergies de choc, la pharmacothérapie, la
+protection des voies aériennes, le RACS et les causes réversibles.
 
 - **Site statique**, un seul fichier `index.html` (aucune dépendance externe).
 - **PWA installable** sur l'écran d'accueil, fonctionne sans connexion (service worker).
-- Contenu conforme aux **ERC Guidelines 2025 — Adult Advanced Life Support**, la
-  recommandation officielle applicable en **France** (relayée par le **CFRC** et la **SFMU**).
+- L'affiche est composée à **taille fixe (1640 px)** puis mise à l'échelle du viewport
+  par `fitPoster()` : tout tient à l'écran, **sans défilement**, de 800×600 à 1920×1080.
+  Conséquence : la feuille de style ne contient **aucune media query** — la mise en page
+  dépend de la largeur de l'affiche, pas de celle de l'écran.
 
-## ⚠️ Licence & droits
+> Sur un téléphone en portrait, une affiche paysage réduite pour tenir en entier donne
+> un texte de quelques pixels. Le zoom par pincement reste actif, mais une vue verticale
+> dédiée au mobile reste à faire si l'usage en garde sur téléphone compte.
 
-Le droit d'auteur protège l'*expression* (textes, schémas exacts), **pas les faits ni la
-procédure** (doses, ratios, énergies, séquence). Ce projet est une **création originale** :
-aucun schéma ni texte n'est repris des documents ERC / AHA. Les recommandations sont
-**reformulées** et les sources **citées**.
+## Origine du contenu et droits
 
-- **ERC** / **AHA** : © tous droits réservés → réutilisation de *leurs* figures = permission + frais.
-- **ILCOR CoSTR** : CC BY-NC-ND (partage tel quel, non commercial, sans modification).
-- Ce projet : **usage non commercial**, aide-mémoire pédagogique, avec disclaimer médical.
+Cette version **reprend la structure et le contenu d'une affiche** inspirée des
+recommandations de l'*American Heart Association* (encadrés numérotés 1–7 et A–C,
+panneaux latéraux, causes réversibles). Ce n'est donc **pas une création originale** :
+c'est une adaptation.
+
+Ce qui a été refait : la **terminologie**, retraduite en français clinique (RCP et non
+RCR, adrénaline et non épinéphrine, embolie pulmonaire et non « thrombose pulmonaire »,
+RACS et non RCS), ainsi que deux **contresens** de la traduction source — la PetCO₂ doit
+être décrite comme *basse* et non « fiable », et « tension des pneumothorax » devient
+*pneumothorax sous tension*.
+
+Le droit d'auteur protège l'*expression* (mise en page, formulations exactes), **pas les
+faits ni la procédure** (doses, ratios, énergies, séquence). La mise en page et
+l'enchaînement des encadrés étant dérivés de l'affiche source :
+
+- usage **non commercial**, pédagogique, avec mention de la source ;
+- avant toute **diffusion large ou commerciale**, faire vérifier les droits sur la mise
+  en page d'origine, ou redessiner l'organigramme de façon indépendante ;
+- **ERC** / **AHA** : © tous droits réservés — réutiliser *leurs* figures suppose une
+  autorisation.
 
 **Ce n'est pas un dispositif médical.** Ne remplace ni le jugement clinique, ni la
-formation, ni les protocoles de l'établissement. Toujours vérifier la version en vigueur
-sur [cprguidelines.eu](https://www.cprguidelines.eu/).
+formation, ni les protocoles de l'établissement. Vérifier la version en vigueur des
+recommandations applicables en France sur [cprguidelines.eu](https://www.cprguidelines.eu/).
 
 ## Développement local
 
@@ -30,24 +49,21 @@ sur [cprguidelines.eu](https://www.cprguidelines.eu/).
 python3 -m http.server 8080   # puis http://localhost:8080
 ```
 
-## Déploiement sur poilon.com/arret-cardiaque (GitHub Pages)
-
-1. Créer un dépôt **`arret-cardiaque`** sous le compte GitHub `poilon`.
-2. Pousser ce dossier sur la branche `main`.
-3. Repo → **Settings → Pages → Source : GitHub Actions**.
-4. Le workflow `.github/workflows/deploy.yml` publie automatiquement.
-5. Le site est servi sous le domaine du compte : **https://poilon.com/arret-cardiaque**
-   (le domaine personnalisé configuré sur `poilon.github.io` s'applique aux project pages).
+Pour contrôler le rendu sans navigateur interactif :
 
 ```bash
-git add -A
-git commit -m "Arrêt cardiaque ALS ERC 2025"
-git branch -M main
-git remote add origin git@github.com:poilon/arret-cardiaque.git
-git push -u origin main
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless=new --disable-gpu --window-size=1600,900 \
+  --screenshot=/tmp/ac.png --virtual-time-budget=10000 \
+  "file://$PWD/index.html"
 ```
 
-## Mise à jour du contenu
+## Déploiement sur poilon.com/arret-cardiaque (GitHub Pages)
 
-À chaque modification de `index.html`, incrémenter la variable `CACHE` dans `sw.js`
-pour forcer le rafraîchissement du cache hors-ligne des utilisateurs.
+Le workflow `.github/workflows/deploy.yml` publie automatiquement à chaque push sur
+`main` (Settings → Pages → Source : **GitHub Actions**). Le domaine personnalisé
+configuré sur `poilon.github.io` s'applique aux project pages.
+
+Le nom du cache du service worker contient `__BUILD__`, remplacé par le SHA du commit
+au déploiement : le cache hors-ligne se purge donc tout seul à chaque mise en ligne,
+aucune variable à incrémenter à la main.
