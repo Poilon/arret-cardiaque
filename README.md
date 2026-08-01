@@ -1,3 +1,10 @@
+> **Ce dépôt a déménagé.** Arrêt cardiaque (ALS, ERC 2025) fait maintenant partie du monorepo
+> [Poilon/carabin](https://github.com/Poilon/carabin), dans `arret-cardiaque/`, et est en ligne sur
+> **https://poilon.com/carabin/arret-cardiaque/**
+>
+> Ce dépôt ne sert plus qu'une redirection. Le code et son historique continuent
+> là-bas — ne rien committer ici.
+
 # Arrêt cardiaque — algorithme adulte
 
 Affiche **hors-ligne** de l'algorithme de l'arrêt cardiaque chez l'adulte
